@@ -1,11 +1,16 @@
 <?php
 
-class welcome extends Controller
+class videos extends Controller
 {
 
     function index()
     {
         $this->users = get_all("SELECT * FROM user");
+        $this->videos = get_all("SELECT * FROM video");
+    }
+    function view()
+    {
+        $this->videos = get_one("SELECT * FROM video WHERE id={$this->params[0]}");
     }
 
     function index_ajax()

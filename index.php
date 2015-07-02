@@ -3,7 +3,7 @@
 // Project constants
 define('PROJECT_NAME', 'Videokursused');
 define('DB_NAME', 'Videokursuste leht');
-define('DEFAULT_CONTROLLER', 'welcome');
+define('DEFAULT_CONTROLLER', 'videos');
 define('DEBUG', false);
 
 // Load app
