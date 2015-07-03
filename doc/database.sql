@@ -32,6 +32,7 @@ CREATE TABLE IF NOT EXISTS `user` (
   `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0'
 ) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
+
 --
 -- Andmete tõmmistamine tabelile `user`
 --
@@ -59,8 +60,8 @@ CREATE TABLE IF NOT EXISTS `video` (
 --
 
 INSERT INTO `video` (`video_id`, `title`, `link`, `date_added`, `user_id`) VALUES
-  (1, 'Top 10 SyFy Channel Shows', 'https://www.youtube.com/embed/CPSI9sLxIew', '2015-07-02 12:52:21', 1),
-  (2, 'I''M NOT AN ANIMATOR', 'https://www.youtube.com/embed/mcrsyXyd34A', '2015-07-02 13:14:02', 1);
+  (1, 'Top 10 SyFy Channel Shows', 'https://www.youtube.com/watch?v=CPSI9sLxIew', '2015-07-02 12:52:21', 1),
+  (2, 'I''M NOT AN ANIMATOR', 'https://www.youtube.com/watch?v=mcrsyXyd34A', '2015-07-02 13:14:02', 1);
 
 --
 -- Indeksid tõmmistatud tabelitele
