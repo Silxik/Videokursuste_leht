@@ -1,6 +1,7 @@
 <div class="container">
     <ul class="list-unstyled video-list-thumbs row">
         <? foreach ($videos as $video) :
+            // Parses URL variables from a Youtube link
             parse_str( parse_url( $video['link'], PHP_URL_QUERY ), $url_vars );
             ?>
             <li class="col-lg-3 col-sm-4 col-xs-6">
