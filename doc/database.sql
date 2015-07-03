@@ -1,18 +1,18 @@
 -- phpMyAdmin SQL Dump
--- version 4.1.12
+-- version 4.3.11
 -- http://www.phpmyadmin.net
 --
--- Host: localhost:3306
--- Loomise aeg: Sept 29, 2014 kell 03:59 PM
--- Serveri versioon: 5.5.34
--- PHP versioon: 5.5.10
+-- Host: 127.0.0.1
+-- Loomise aeg: Juuli 03, 2015 kell 09:12 EL
+-- Serveri versioon: 5.6.24
+-- PHP versioon: 5.6.8
 
 SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 SET time_zone = "+00:00";
 
 --
--- Andmebaas: `halo`
+-- Andmebaas: `videokursuste leht`
 --
 
 -- --------------------------------------------------------
@@ -22,22 +22,83 @@ SET time_zone = "+00:00";
 --
 
 DROP TABLE IF EXISTS `user`;
-CREATE TABLE `user` (
-  `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,
+CREATE TABLE IF NOT EXISTS `user` (
+  `user_id` int(10) unsigned NOT NULL,
   `username` varchar(25) NOT NULL,
   `is_admin` tinyint(4) NOT NULL DEFAULT '0',
   `password` varchar(255) NOT NULL,
   `active` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `email` varchar(255) NOT NULL,
-  `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0',
-  PRIMARY KEY (`user_id`),
-  UNIQUE KEY `UNIQUE` (`username`)
-) ENGINE=InnoDB  DEFAULT CHARSET=utf8 AUTO_INCREMENT=2 ;
+  `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0'
+) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
 
 --
 -- Andmete tõmmistamine tabelile `user`
 --
 
 INSERT INTO `user` (`user_id`, `username`, `is_admin`, `password`, `active`, `email`, `deleted`) VALUES
-(1, 'demo', 0, 'demo', 1, '', 0);
+  (1, 'demo', 0, 'demo', 1, '', 0);
+
+-- --------------------------------------------------------
+
+--
+-- Tabeli struktuur tabelile `video`
+--
+
+DROP TABLE IF EXISTS `video`;
+CREATE TABLE IF NOT EXISTS `video` (
+  `video_id` int(10) unsigned NOT NULL,
+  `title` varchar(50) NOT NULL,
+  `link` varchar(155) NOT NULL,
+  `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `user_id` int(10) unsigned NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+
+--
+-- Andmete tõmmistamine tabelile `video`
+--
+
+INSERT INTO `video` (`video_id`, `title`, `link`, `date_added`, `user_id`) VALUES
+  (1, 'Top 10 SyFy Channel Shows', 'https://www.youtube.com/embed/CPSI9sLxIew', '2015-07-02 12:52:21', 1),
+  (2, 'I''M NOT AN ANIMATOR', 'https://www.youtube.com/embed/mcrsyXyd34A', '2015-07-02 13:14:02', 1);
+
+--
+-- Indeksid tõmmistatud tabelitele
+--
+
+--
+-- Indeksid tabelile `user`
+--
+ALTER TABLE `user`
+ADD PRIMARY KEY (`user_id`), ADD UNIQUE KEY `UNIQUE` (`username`);
+
+--
+-- Indeksid tabelile `video`
+--
+ALTER TABLE `video`
+ADD PRIMARY KEY (`video_id`), ADD KEY `user_id` (`user_id`);
+
+--
+-- AUTO_INCREMENT tõmmistatud tabelitele
+--
+
+--
+-- AUTO_INCREMENT tabelile `user`
+--
+ALTER TABLE `user`
+MODIFY `user_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+--
+-- AUTO_INCREMENT tabelile `video`
+--
+ALTER TABLE `video`
+MODIFY `video_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+--
+-- Tõmmistatud tabelite piirangud
+--
+
+--
+-- Piirangud tabelile `video`
+--
+ALTER TABLE `video`
+ADD CONSTRAINT `video_ibfk_1` FOREIGN KEY (`user_id`) REFERENCES `user` (`user_id`);
 SET FOREIGN_KEY_CHECKS=1;
