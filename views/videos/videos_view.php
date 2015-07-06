@@ -1,8 +1,11 @@
-<?php
-/**
- * Created by PhpStorm.
- * User: Raul
- * Date: 2.07.2015
- * Time: 16:08
- */
-var_dump($video)?>
+<?php parse_str( parse_url( $video['link'], PHP_URL_QUERY ), $url_vars );?>
+<div class="container">
+    <div class="row">
+        <div class="col-md-8">
+            <iframe width="560" height="315" src="https://www.youtube.com/embed/<?= $url_vars['v']?>" frameborder="0" allowfullscreen></iframe>
+        </div>
+        <div class="col-md-4">
+            <p>Posted by: <?=$video['username']?></p>
+        </div>
+    </div>
+</div>

@@ -10,7 +10,8 @@ class videos extends Controller
     }
     function view()
     {
-        $this->videos = get_one("SELECT * FROM video WHERE id={$this->params[0]}");
+        $video_id = $this-> params[0];
+        $this-> video = get_first("SELECT * FROM video NATURAL JOIN user WHERE video_id='$video_id'");
     }
 
     function index_ajax()
