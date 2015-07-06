@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: localhost
--- Generation Time: Jul 06, 2015 at 05:55 PM
+-- Generation Time: Jul 06, 2015 at 06:17 PM
 -- Server version: 5.6.19-0ubuntu0.14.04.1
 -- PHP Version: 5.5.9-1ubuntu4.9
 
@@ -25,19 +25,26 @@ DROP TABLE IF EXISTS `person`;
 CREATE TABLE IF NOT EXISTS `person` (
   `person_id` int(10) unsigned NOT NULL,
   `username` varchar(25) NOT NULL,
+  `person_firstname` varchar(30) NOT NULL,
+  `person_lastname` varchar(50) NOT NULL,
+  `person_first_visit` datetime NOT NULL,
+  `person_last_visit` datetime NOT NULL,
+  `person_SID` varchar(64) NOT NULL,
   `is_admin` tinyint(4) NOT NULL DEFAULT '0',
   `password` varchar(255) NOT NULL,
   `active` tinyint(3) unsigned NOT NULL DEFAULT '0',
   `email` varchar(255) NOT NULL,
+  `setup` tinyint(1) NOT NULL DEFAULT '0',
   `deleted` tinyint(1) unsigned NOT NULL DEFAULT '0'
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `person`
 --
 
-INSERT INTO `person` (`person_id`, `username`, `is_admin`, `password`, `active`, `email`, `deleted`) VALUES
-(1, 'demo', 0, 'demo', 1, '', 0);
+INSERT INTO `person` (`person_id`, `username`, `person_firstname`, `person_lastname`, `person_first_visit`, `person_last_visit`, `person_SID`, `is_admin`, `password`, `active`, `email`, `setup`, `deleted`) VALUES
+(1, 'demo', '', '', '0000-00-00 00:00:00', '0000-00-00 00:00:00', '', 0, 'demo', 1, '', 0, 0),
+(2, 'henno.taht', 'Henno', 'Täht', '2015-07-06 15:02:15', '2015-07-06 18:05:18', '2e07cc7', 0, '', 0, '', 0, 0);
 
 -- --------------------------------------------------------
 
@@ -89,7 +96,7 @@ ALTER TABLE `video`
 -- AUTO_INCREMENT for table `person`
 --
 ALTER TABLE `person`
-  MODIFY `person_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+  MODIFY `person_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- AUTO_INCREMENT for table `video`
 --
