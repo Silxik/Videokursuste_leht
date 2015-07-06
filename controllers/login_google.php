@@ -87,10 +87,12 @@ class login_google extends Controller
 
                 /** end **/
 
-                if(!get_one("SELECT setup FROM person WHERE person_id={$person['person_id']}")){
+                // TODO: USER'S FIRST VISIT (REDIRECT TO SETUP PAGE)
+                // OFF FOR NOW...
+                /*if(!get_one("SELECT setup FROM person WHERE person_id={$person['person_id']}")){
                     header('Location: ' . BASE_URL . 'user_setup');
                     exit();
-                }
+                }*/
 
                 //Load user data and return
                 $this->load_user_data($person);
