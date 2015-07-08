@@ -14,6 +14,10 @@
         <th>Active</th>
         <td><input type="checkbox" name="data[active]" <?= $person['active'] != 0 ? 'checked="checked"' : '' ?>
                    disabled="disabled"/></td>
+    </tr><tr>
+        <th>Admin</th>
+        <td><input type="checkbox" name="data[is_admin]" <?= $person['is_admin'] != 0 ? 'checked="checked"' : '' ?>
+                   disabled="disabled"/></td>
     </tr>
     <tr>
         <th>Email</th>

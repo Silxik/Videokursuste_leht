@@ -2,22 +2,19 @@
 
 class user extends Controller
 {
-    //public $requires_auth = true;
+    public $requires_auth = true;
 
     function index()
     {
-        global $db;
-       // Upload request has been sent
-        if (isset ($_POST["submit"])) {
-            $data = array('title' => $_POST['title'], 'link' => $_POST['link'],'tags' => $_POST['tags'],
-                'description' => $_POST['desc'],'person_id' => '1','public' => $_POST['access'] == "checked" );
 
-               $data = escape2 ($data);
-            try {
-                insert ('video', $data);
-            } catch (Exception $e) {
-                echo $e;
-            }
+    }
+    function index_post()
+    {
+        if(isset($_POST['data'])){
+            $data = $_POST['data'];
+            $data['person_id'] = 3;
+            $data['public'] = isset($data['public']) ? 1 : 0;
+            insert('video', $data);
         }
     }
 

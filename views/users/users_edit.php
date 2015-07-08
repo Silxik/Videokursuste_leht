@@ -20,6 +20,10 @@
             <td><input type="checkbox" name="data[active]" <?= $person['active'] != 0 ? 'checked="checked"' : '' ?>/>
         </tr>
         <tr>
+            <th>Admin</th>
+            <td><input type="checkbox" name="data[is_admin]" <?= $person['is_admin'] != 0 ? 'checked="checked"' : '' ?>/>
+        </tr>
+        <tr>
             <th>Email</th>
             <td><input type="text" name="data[email]" value="<?= $person['email'] ?>">
         </tr>

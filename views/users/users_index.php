@@ -26,6 +26,11 @@
                            name="data[active]" checked="checked"/>
             </tr>
             <tr>
+                <th>Admin</th>
+                <td><input type="checkbox"
+                           name="data[is_admin]"/>
+            </tr>
+            <tr>
                 <th>Email</th>
                 <td><input type="text" name="data[email]" placeholder="em@ail.ee">
             </tr>

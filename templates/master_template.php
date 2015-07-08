@@ -50,8 +50,13 @@
             <ul class="nav navbar-nav navbar-right">
                 <li><input name="Otsi" placeholder="Otsi"></li>
                 <li>
-                    <a href="user"><button class="btn btn-primary">
+                    <a href="login"><button class="btn btn-primary">
                             Logi Sisse
+                        </button></a>
+                </li>
+                <li>
+                    <a href="logout"><button class="btn btn-primary">
+                            Logi Välja
                         </button></a>
                 </li>
                 <!-- <li><button>Liitu</button></li> -->
