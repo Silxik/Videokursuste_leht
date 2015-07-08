@@ -192,3 +192,21 @@ function escape(array $data)
     }
     return $values;
 }
+
+function escape2(array $data)
+{
+    global $db;
+    $values = array();
+    if (!empty($data)) {
+        foreach ($data as $field => $value) {
+            if ($value === NULL) {
+                $values[$field] = "NULL";
+            } elseif (is_array($value) && isset($value['no_escape'])) {
+                $values[$field] = mysqli_real_escape_string($db, $value['no_escape']);
+            } else {
+                $values[$field] = mysqli_real_escape_string($db, $value);
+            }
+        }
+    }
+    return $values;
+}

@@ -51,8 +51,8 @@
                 <li><input name="Otsi" placeholder="Otsi"></li>
                 <li>
                     <a href="user"><button class="btn btn-primary">
-                        Logi Sisse
-                    </button></a>
+                            Logi Sisse
+                        </button></a>
                 </li>
                 <!-- <li><button>Liitu</button></li> -->
             </ul>

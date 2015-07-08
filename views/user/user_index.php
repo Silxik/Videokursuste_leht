@@ -10,7 +10,7 @@
                         <div class="form-group">
                             <label class="col-md-3 control-label" for="title">Pealkiri</label>
                             <div class="col-md-9">
-                                <input id="title" name="name" type="text" placeholder="Pealkiri" class="form-control">
+                                <input id="title" name="title" type="text" placeholder="Pealkiri" class="form-control">
                             </div>
                         </div>
 
@@ -32,16 +32,23 @@
 
                         <!-- Description -->
                         <div class="form-group">
-                            <label class="col-md-3 control-label" for="description">Kirjeldus</label>
+                            <label class="col-md-3 control-label" for="desc">Kirjeldus</label>
                             <div class="col-md-9">
-                                <textarea class="form-control" id="description" name="description" placeholder="Kirjeldus" rows="5"></textarea>
+                                <textarea class="form-control" id="desc" name="desc" placeholder="Kirjeldus" rows="5"></textarea>
+                            </div>
+                        </div>
+                        <!-- Access -->
+                        <div class="form-group">
+                            <label class="col-md-3 control-label" for="desc">Avalik</label>
+                            <div class="col-md-9">
+                                <input checked type="checkbox" class="form-control" id="access" name="access">
                             </div>
                         </div>
 
                         <!-- Form actions -->
                         <div class="form-group">
                             <div class="col-md-12 text-right">
-                                <button type="submit" class="btn btn-primary btn-lg">Lisa</button>
+                                <button type="submit" class="btn btn-primary btn-lg" name="submit">Lisa</button>
                             </div>
                         </div>
                     </fieldset>
