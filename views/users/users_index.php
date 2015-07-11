@@ -1,8 +1,8 @@
 <h3>Users</h3>
 <ul class="list-group">
     <? foreach ($users as $person): ?>
-        <li class="list-group-item"><a
-                href="users/view/<?= $person['person_id'] ?>/<?= $person['username'] ?>"><?= $person['username'] ?></a></li>
+        <li class="list-group-item"><a href="users/view/<?= $person['person_id'] ?>/<?= $person['username'] ?>"><?= $person['username'] ?></a>
+        </li>
     <? endforeach ?>
 </ul>
 

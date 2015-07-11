@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Loomise aeg: Juuli 08, 2015 kell 01:27 PL
+-- Loomise aeg: Juuli 11, 2015 kell 09:33 PL
 -- Serveri versioon: 5.6.24
 -- PHP versioon: 5.6.8
 
@@ -14,6 +14,37 @@ SET time_zone = "+00:00";
 --
 -- Andmebaas: `videokursuste leht`
 --
+
+-- --------------------------------------------------------
+
+--
+-- Tabeli struktuur tabelile `comment`
+--
+
+DROP TABLE IF EXISTS `comment`;
+CREATE TABLE IF NOT EXISTS `comment` (
+  `comment_id` int(155) unsigned NOT NULL,
+  `comment` text NOT NULL,
+  `rating` int(11) NOT NULL,
+  `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  `video_id` int(11) unsigned NOT NULL,
+  `person_id` int(11) unsigned NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+
+--
+-- Andmete tõmmistamine tabelile `comment`
+--
+
+INSERT INTO `comment` (`comment_id`, `comment`, `rating`, `date_added`, `video_id`, `person_id`) VALUES
+  (1, 'Lahe video!', 5, '2015-07-11 16:26:10', 2, 3),
+  (2, 'Huvitav video!', 5, '2015-07-11 16:26:10', 1, 1),
+  (3, 'Animators UNITE!!!', 5, '2015-07-11 16:26:10', 2, 1),
+  (4, 'Good to know!', 5, '2015-07-11 16:26:10', 2, 1),
+  (5, 'I wish to be such good animator', 5, '2015-07-11 16:26:10', 2, 1),
+  (6, 'Animator test', 5, '2015-07-11 16:26:10', 2, 1),
+  (7, 'ALL BOW TO MASTER ANIMATOR!', 5, '2015-07-11 16:27:04', 2, 1),
+  (8, 'I am here to troll and chew bubblegum... And I am all out of bubble gum! THIS VIDEO SUCKS, YOU ARE JUST LAZY!', 5, '2015-07-11 16:30:35', 2, 1),
+  (9, 'half-life 3 confirmed', 5, '2015-07-11 17:33:34', 2, 3);
 
 -- --------------------------------------------------------
 
@@ -78,6 +109,12 @@ INSERT INTO `video` (`video_id`, `title`, `desc`, `link`, `date_added`, `person_
 --
 
 --
+-- Indeksid tabelile `comment`
+--
+ALTER TABLE `comment`
+ADD PRIMARY KEY (`comment_id`), ADD KEY `video_id` (`video_id`), ADD KEY `user_id` (`person_id`);
+
+--
 -- Indeksid tabelile `person`
 --
 ALTER TABLE `person`
@@ -94,6 +131,11 @@ ADD PRIMARY KEY (`video_id`), ADD KEY `user_id` (`person_id`);
 --
 
 --
+-- AUTO_INCREMENT tabelile `comment`
+--
+ALTER TABLE `comment`
+MODIFY `comment_id` int(155) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
+--
 -- AUTO_INCREMENT tabelile `person`
 --
 ALTER TABLE `person`
@@ -106,6 +148,13 @@ MODIFY `video_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
 --
 -- Tõmmistatud tabelite piirangud
 --
+
+--
+-- Piirangud tabelile `comment`
+--
+ALTER TABLE `comment`
+ADD CONSTRAINT `comment_ibfk_1` FOREIGN KEY (`video_id`) REFERENCES `video` (`video_id`),
+ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`);
 
 --
 -- Piirangud tabelile `video`
