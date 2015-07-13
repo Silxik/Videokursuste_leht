@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Loomise aeg: Juuli 13, 2015 kell 09:57 EL
+-- Loomise aeg: Juuli 13, 2015 kell 12:22 PL
 -- Serveri versioon: 5.6.24
 -- PHP versioon: 5.6.8
 
@@ -86,6 +86,28 @@ INSERT INTO `person` (`person_id`, `username`, `person_firstname`, `person_lastn
 -- --------------------------------------------------------
 
 --
+-- Tabeli struktuur tabelile `tag`
+--
+
+DROP TABLE IF EXISTS `tag`;
+CREATE TABLE IF NOT EXISTS `tag` (
+  `tag_id` int(10) unsigned NOT NULL,
+  `tag_name` varchar(25) NOT NULL
+) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+
+--
+-- Andmete tõmmistamine tabelile `tag`
+--
+
+INSERT INTO `tag` (`tag_id`, `tag_name`) VALUES
+  (1, 'Top 10'),
+  (2, 'Animator'),
+  (3, 'WatchMojo'),
+  (4, 'TomSka');
+
+-- --------------------------------------------------------
+
+--
 -- Tabeli struktuur tabelile `video`
 --
 
@@ -99,7 +121,7 @@ CREATE TABLE IF NOT EXISTS `video` (
   `person_id` int(10) unsigned NOT NULL,
   `public` tinyint(1) NOT NULL DEFAULT '1',
   `tags` varchar(64) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=3 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=4 DEFAULT CHARSET=utf8;
 
 --
 -- Andmete tõmmistamine tabelile `video`
@@ -107,7 +129,32 @@ CREATE TABLE IF NOT EXISTS `video` (
 
 INSERT INTO `video` (`video_id`, `title`, `desc`, `link`, `date_added`, `person_id`, `public`, `tags`) VALUES
   (1, 'Top 10 SyFy Channel Shows', 'Blurring the line between fantasy and reality, natural and supernatural, normal and paranormal, these are the shows that defined a network. ', 'https://www.youtube.com/watch?v=CPSI9sLxIew', '2015-07-02 12:52:21', 1, 1, ''),
-  (2, 'I''M NOT AN ANIMATOR', 'TOMSKA YOU ARE MY FAVOURITE ANIMATOR! NOOOO.', 'https://www.youtube.com/watch?v=mcrsyXyd34A', '2015-07-02 13:14:02', 1, 1, '');
+  (2, 'I''M NOT AN ANIMATOR', 'TOMSKA YOU ARE MY FAVOURITE ANIMATOR! NOOOO.', 'https://www.youtube.com/watch?v=mcrsyXyd34A', '2015-07-02 13:14:02', 1, 1, ''),
+  (3, 'asdfmovie 1-8 (Complete Collection)', 'every asdfmovie so far! oh my!!!', 'http://www.youtube.com/watch?v=PF9z-kEmic4', '2015-07-13 10:04:18', 3, 1, '');
+
+-- --------------------------------------------------------
+
+--
+-- Tabeli struktuur tabelile `video_tags`
+--
+
+DROP TABLE IF EXISTS `video_tags`;
+CREATE TABLE IF NOT EXISTS `video_tags` (
+  `video_id` int(11) unsigned NOT NULL,
+  `tag_id` int(11) unsigned NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8;
+
+--
+-- Andmete tõmmistamine tabelile `video_tags`
+--
+
+INSERT INTO `video_tags` (`video_id`, `tag_id`) VALUES
+  (1, 1),
+  (2, 2),
+  (3, 2),
+  (1, 3),
+  (2, 4),
+  (3, 4);
 
 --
 -- Indeksid tõmmistatud tabelitele
@@ -126,10 +173,22 @@ ALTER TABLE `person`
 ADD PRIMARY KEY (`person_id`), ADD UNIQUE KEY `UNIQUE` (`username`);
 
 --
+-- Indeksid tabelile `tag`
+--
+ALTER TABLE `tag`
+ADD PRIMARY KEY (`tag_id`);
+
+--
 -- Indeksid tabelile `video`
 --
 ALTER TABLE `video`
 ADD PRIMARY KEY (`video_id`), ADD KEY `user_id` (`person_id`);
+
+--
+-- Indeksid tabelile `video_tags`
+--
+ALTER TABLE `video_tags`
+ADD PRIMARY KEY (`video_id`,`tag_id`), ADD KEY `tag_id` (`tag_id`);
 
 --
 -- AUTO_INCREMENT tõmmistatud tabelitele
@@ -146,10 +205,15 @@ MODIFY `comment_id` int(155) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=15;
 ALTER TABLE `person`
 MODIFY `person_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
+-- AUTO_INCREMENT tabelile `tag`
+--
+ALTER TABLE `tag`
+MODIFY `tag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+--
 -- AUTO_INCREMENT tabelile `video`
 --
 ALTER TABLE `video`
-MODIFY `video_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=3;
+MODIFY `video_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=4;
 --
 -- Tõmmistatud tabelite piirangud
 --
@@ -166,4 +230,11 @@ ADD CONSTRAINT `comment_ibfk_2` FOREIGN KEY (`person_id`) REFERENCES `person` (`
 --
 ALTER TABLE `video`
 ADD CONSTRAINT `video_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`);
+
+--
+-- Piirangud tabelile `video_tags`
+--
+ALTER TABLE `video_tags`
+ADD CONSTRAINT `video_tags_ibfk_1` FOREIGN KEY (`video_id`) REFERENCES `video` (`video_id`),
+ADD CONSTRAINT `video_tags_ibfk_2` FOREIGN KEY (`tag_id`) REFERENCES `tag` (`tag_id`);
 SET FOREIGN_KEY_CHECKS=1;
