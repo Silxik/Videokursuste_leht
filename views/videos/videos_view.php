@@ -9,19 +9,15 @@
             <p><?= $video['description']?></p>
             <p>Posted by: <strong><?=$video['username']?></strong></p>
         </div>
-        <div class="col-md-12">
-            <h3>Lisa kommentaar</h3>
-            <form method="POST">
-                <textarea class="form-control" id="comment" name="data[comment]" placeholder="Kirjuta kommentaar" rows="2" ></textarea>
-                <select class="dropdown" name="data[person_id]">
-                    <? foreach ($persons as $person): ?>
-                        <option value="<?=$person['person_id']?>"><?=$person['username']?></option>
-                        </li>
-                    <? endforeach ?>
-                </select>
-                <button type="submit" class="btn btn-primary btn-sm" name="submit">Postita</button>
-            </form>
-        </div>
+        <?php if ($auth->active): ?>
+            <div class="col-md-12">
+                <h3>Lisa kommentaar</h3>
+                <form method="POST">
+                    <textarea class="form-control" id="comment" name="data[comment]" placeholder="Kirjuta kommentaar" rows="2" ></textarea>
+                    <button type="submit" class="btn btn-primary btn-sm" name="submit">Postita</button>
+                </form>
+            </div>
+        <?php endif; ?>
         <div class="col-md-12">
             <ul class="list-group">
                 <h3>Kommentaarid</h3>

@@ -26,13 +26,15 @@ class videos extends Controller
     {
         echo "\$_POST:<br>";
         var_dump($_POST);
+
     }
     function view_post(){
-        if(isset($_POST['data'])){
+        if(isset($_POST['data'])&& isset($_SESSION['person_id'])){
             $video_id=$this->params[0];
             $data = $_POST['data'];
             $data['video_id']=$video_id;
             $data['rating'] = 5;
+            $data['person_id'] =$_SESSION['person_id'];
             insert('comment', $data);
             header('Location: ' . BASE_URL . 'videos/view/' . $video_id);
         }

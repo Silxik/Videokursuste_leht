@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Loomise aeg: Juuli 11, 2015 kell 09:33 PL
+-- Loomise aeg: Juuli 13, 2015 kell 09:57 EL
 -- Serveri versioon: 5.6.24
 -- PHP versioon: 5.6.8
 
@@ -29,7 +29,7 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `video_id` int(11) unsigned NOT NULL,
   `person_id` int(11) unsigned NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=10 DEFAULT CHARSET=utf8;
+) ENGINE=InnoDB AUTO_INCREMENT=15 DEFAULT CHARSET=utf8;
 
 --
 -- Andmete tõmmistamine tabelile `comment`
@@ -44,7 +44,12 @@ INSERT INTO `comment` (`comment_id`, `comment`, `rating`, `date_added`, `video_i
   (6, 'Animator test', 5, '2015-07-11 16:26:10', 2, 1),
   (7, 'ALL BOW TO MASTER ANIMATOR!', 5, '2015-07-11 16:27:04', 2, 1),
   (8, 'I am here to troll and chew bubblegum... And I am all out of bubble gum! THIS VIDEO SUCKS, YOU ARE JUST LAZY!', 5, '2015-07-11 16:30:35', 2, 1),
-  (9, 'half-life 3 confirmed', 5, '2015-07-11 17:33:34', 2, 3);
+  (9, 'half-life 3 confirmed', 5, '2015-07-11 17:33:34', 2, 3),
+  (10, 'Kommentaar', 5, '2015-07-13 07:24:26', 2, 1),
+  (11, 'Test2', 5, '2015-07-13 07:28:59', 2, 1),
+  (12, 'kolm', 5, '2015-07-13 07:30:24', 2, 1),
+  (13, 'neljas katse', 5, '2015-07-13 07:53:17', 2, 1),
+  (14, 'Mina ka!', 5, '2015-07-13 07:53:47', 2, 3);
 
 -- --------------------------------------------------------
 
@@ -134,7 +139,7 @@ ADD PRIMARY KEY (`video_id`), ADD KEY `user_id` (`person_id`);
 -- AUTO_INCREMENT tabelile `comment`
 --
 ALTER TABLE `comment`
-MODIFY `comment_id` int(155) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=10;
+MODIFY `comment_id` int(155) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=15;
 --
 -- AUTO_INCREMENT tabelile `person`
 --
