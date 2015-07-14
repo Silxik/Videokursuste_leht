@@ -29,7 +29,7 @@ class user extends Controller
                 $filename = basename($file['name']);
                 $info = pathinfo($filename);
                 $ext = $info['extension']; // get the extension of the file
-                $allowed = array('avi', 'mp4', 'webm', 'mov', '3gp', 'mmv');
+                $allowed = array('mp4', 'webm');
                 if (!in_array($ext, $allowed)) {
                     echo 'Failitüüp ' . $ext . ' pole lubatud!';
                     return;

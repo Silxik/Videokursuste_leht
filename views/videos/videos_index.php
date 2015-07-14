@@ -14,7 +14,8 @@
                 <li class="col-lg-3 col-sm-4 col-xs-6">
                     <a href="<?=BASE_URL?>videos/view/<?=$video['video_id']?>" title="<?= $video['description'] ?>">
                         <?php if($video['linktype']) {//uploaded video TODO: uploaded video icon ?>
-
+                            <img src="assets/img/thumb.png" alt="<?$video['description']?>" class="img-responsive"
+                                 height="130px"/>
                         <?php } else {//youtube video ?>
                         <img src="http://i.ytimg.com/vi/<?= $video['link']?>/mqdefault.jpg" alt="<?$video['description']?>" class="img-responsive"
                              height="130px"/>
