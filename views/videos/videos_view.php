@@ -13,6 +13,9 @@
         <div class="col-md-4">
             <h2><?= $video['title']?></h2>
             <p><?= $video['description']?></p>
+            <?foreach($tags as $tag):?>
+                <a href="tags/view/<?=$tag['tag_id']?>"><span class="label label-info"><?=$tag['tag_name']?></span></a>
+            <?endforeach?>
             <p>Posted by: <strong><?=$video['username']?></strong></p>
         </div>
         <?php if ($auth->active): ?>
