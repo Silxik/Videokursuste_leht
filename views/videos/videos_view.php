@@ -1,8 +1,14 @@
-<? parse_str( parse_url( $video['link'], PHP_URL_QUERY ), $url_vars );?>
 <div class="container">
     <div class="row">
         <div class="col-md-8">
-            <iframe width="560" height="315" src="https://www.youtube.com/embed/<?= $url_vars['v']?>" frameborder="0" allowfullscreen></iframe>
+            <?php if($video['linktype']) {//uploaded video ?>
+                <video width="560" height="315">
+                    <source src="uploads/<?= $video['link'] ?>" type="video/mp4">
+                    Your browser does not support the video tag.
+                </video>
+            <?php } else {//youtube video ?>
+                <iframe width="560" height="315" src="https://www.youtube.com/embed/<?= $video['link']?>" frameborder="0" allowfullscreen></iframe>
+            <?php } ?>
         </div>
         <div class="col-md-4">
             <h2><?= $video['title']?></h2>

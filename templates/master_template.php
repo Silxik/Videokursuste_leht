@@ -49,14 +49,15 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><input name="Otsi" placeholder="Otsi"></li>
-                <?php if (!isset($_SESSION['person_id'])){ ?>
+                <?php
+                    //Menu options based on login status
+                    if (!isset($_SESSION['person_id'])){ ?>
                 <li>
                     <a href="login"><button class="btn btn-primary">
                             Logi Sisse
                         </button></a>
                 </li>
                 <?php } else { ?>
-
                 <li>
                     <a href="logout"><button class="btn btn-primary">
                             Logi Välja

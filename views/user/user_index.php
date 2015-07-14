@@ -42,12 +42,14 @@
                     <legend class="text-center">Lisa video</legend>
                     <button onclick="toggle(1)" class="btn btn-primary btn-lg">Youtube link</button>
                     <button onclick="toggle(0)"class="btn btn-primary btn-lg">Lae üles</button>
-                    <form class="form-horizontal" action="" method="post">
+                    <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
                         <fieldset>
 
 
                             <div id="upload-div">
-                                <input id="file-input" name="upload" type="file" size="15" />
+                                <!-- sets the filesize limit to 40MB -->
+                                <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="40000000"/>
+                                <input type="file" id="file-input" name="upload" accept="video/*"/>
                                 <!-- Drop Zone -->
                                 <div onclick="$('#file-input').trigger('click');" class="upload-drop-zone" id="drop-zone">
                                     Klikka või lohista peale
@@ -100,7 +102,7 @@
                                 <!-- Form actions -->
                                 <div class="form-group">
                                     <div class="col-md-12 text-right">
-                                        <button type="submit" class="btn btn-primary btn-lg" name="submit">Lisa</button>
+                                        <button type="submit" class="btn btn-primary btn-lg">Lisa</button>
                                     </div>
                                 </div>
                             </div>
@@ -111,6 +113,8 @@
         </div>
     </div>
     <script>
+
+        //functions
         function gId(s) {
             return document.getElementById(s);
         }
@@ -123,7 +127,6 @@
             forms[el].style.display = 'block';
             forms[el].opened = true;
         }
-
         function delay() {
             clearTimeout(timeout);
             timeout = setTimeout(function(){suggestInfo()}, 300);
@@ -141,14 +144,15 @@
             }
         }
         function fillInfo(data) {
-            document.getElementById('title').value = data.items[0].snippet.title;
-            document.getElementById('desc').value = data.items[0].snippet.description;
-            document.getElementById('tags').value = data.items[0].snippet.tags.join(', ');
+            gId('title').value = data.items[0].snippet.title;
+            gId('desc').value = data.items[0].snippet.description;
+            gId('tags').value = data.items[0].snippet.tags.join(', ');
             gId('details').style.display = 'block';
         }
-        var link_input = gId('link'), timeout, forms = [gId('yt-div'), gId('upload-div')],
-            dropZone = gId('drop-zone'), fileinput = gId('file-input');
         function startUpload(file) {
+            gId('title').value = file.name;
+            gId('details').style.display = 'block';
+            /*  TODO: working xhr upload
             var xhr = new XMLHttpRequest();
             xhr.onreadystatechange = function() {
                 if (xhr.readyState == 4 && xhr.status == 200) {
@@ -156,23 +160,27 @@
                 }
             };
             //if (file.type == "video" && file.size <= $id("MAX_FILE_SIZE").value)
-            xhr.open("POST", "", true);
+            xhr.open("POST", "user", true);
             xhr.setRequestHeader("X_FILENAME", file.name);
             xhr.send(file);
+            */
         }
 
+        //global variables
+        var link_input = gId('link'), timeout, forms = [gId('yt-div'), gId('upload-div')],
+            dropZone = gId('drop-zone'), fileinput = gId('file-input');
+
+        //event listeners
         link_input.addEventListener('input', delay);
         fileinput.addEventListener('change', function(e) {
             var upfile = gId('file-input').files[0];
             e.preventDefault();
-
             startUpload(upfile);
         });
-
         dropZone.ondrop = function(e) {
             e.preventDefault();
             this.className = 'upload-drop-zone';
-            startUpload(e.dataTransfer.files);
+            startUpload(e.target.files || e.dataTransfer.files);
         };
         dropZone.ondragover = function() {
             this.className = 'upload-drop-zone drop';
