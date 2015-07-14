@@ -2,7 +2,7 @@
     <div class="row">
         <div class="col-md-8">
             <?php if($video['linktype']) {//uploaded video ?>
-                <video width="560" height="315">
+                <video width="560" height="315" controls>
                     <source src="uploads/<?= $video['link'] ?>" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
