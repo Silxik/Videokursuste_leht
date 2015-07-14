@@ -6,12 +6,21 @@ class user extends Controller
 
     function index()
     {
-
+        $this->courses = get_all("SELECT * FROM course");
     }
     function index_post()
     {
         if (isset($_POST['data'])) {
             $data = $_POST['data'];
+            $course = $_POST['course'];
+            //Course has been selected
+            if (isset($data['course_id'])) {
+                //Creating a new course
+                if ($course['course_name'] != '') {
+                    insert('course', $course);
+                    echo 'Kursus loodud!';
+                }
+            }
 
             // variable to check for existing videos
             $check_for_video = true;
