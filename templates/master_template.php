@@ -16,8 +16,26 @@
     <!-- Custom styles for this template -->
     <style>
         body {
-            padding-top: 70px;
+            padding-top:100px;
         }
+
+        .nav input {
+            margin-top:19px;
+            width:200px;
+            border-radius: 3px;
+        }
+
+        .navbar-brand {
+            font-size: 2em;
+            font-weight: 100;
+            margin-top:5px;
+        }
+
+        .navbar-menu {
+            padding-top: 7px;
+        }
+
+
     </style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -43,26 +61,26 @@
             <a class="navbar-brand" href="#"><?= PROJECT_NAME ?></a>
         </div>
         <div class="navbar-collapse collapse">
-            <ul class="nav navbar-nav">
-                <li><a href="#kursused">Kursused</a></li>
-                <li><a href="#kontakt">Kontakt</a></li>
+            <ul class="nav navbar-nav navbar-menu">
+                <li><a href="tags">Märksõnad</a></li>
+                <!-- <li><a href="#kontakt">Kontakt</a></li> -->
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><input name="Otsi" placeholder="Otsi"></li>
                 <?php
-                    //Menu options based on login status
-                    if (!isset($_SESSION['person_id'])){ ?>
-                <li>
-                    <a href="login"><button class="btn btn-primary">
-                            Logi Sisse
-                        </button></a>
-                </li>
+                //Menu options based on login status
+                if (!isset($_SESSION['person_id'])){ ?>
+                    <li>
+                        <a href="login"><button class="btn btn-primary">
+                                Logi Sisse
+                            </button></a>
+                    </li>
                 <?php } else { ?>
-                <li>
-                    <a href="logout"><button class="btn btn-primary">
-                            Logi Välja
-                        </button></a>
-                </li>
+                    <li>
+                        <a href="logout"><button class="btn btn-primary">
+                                Logi Välja
+                            </button></a>
+                    </li>
                 <?php } ?>
                 <!-- <li><button>Liitu</button></li> -->
             </ul>
