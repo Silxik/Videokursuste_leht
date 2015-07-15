@@ -44,8 +44,19 @@
 </style>
 <h1>Tere tulemast!</h1>
 <?php if ($auth->is_admin): ?>
+
+
     <div class="container">
         <div class="row">
+            <div class="col-md-12">
+                <h3>Lisatud videod</h3>
+                <ul class="list-group">
+                    <? foreach ($videos as $video): ?>
+                        <li class="list-group-item"><a href="user/view/<?= $video['video_id'] ?>"><?= $video['title'] ?></a>
+                        </li>
+                    <? endforeach ?>
+                </ul>
+            </div>
             <div class="col-md-6 col-md-offset-3">
                 <div class="well well-sm">
                     <legend class="text-center">Lisa video</legend>

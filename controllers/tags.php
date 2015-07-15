@@ -8,7 +8,8 @@
 
 class tags extends Controller {
     function index(){
-        $this->tags= get_all("SELECT tag_name, COUNT(video_id) AS count FROM video_tags NATURAL JOIN tag GROUP BY tag_id");
+
+        $this->tags= get_all("SELECT tag_id, tag_name, COUNT(video_id) AS count FROM video_tags NATURAL JOIN tag GROUP BY tag_id");
     }
     function view(){
         $tag_id=$this->params[0];
