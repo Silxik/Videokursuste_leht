@@ -61,8 +61,7 @@
                                 <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="40000000"/>
                                 <input type="file" id="file-input" name="upload" accept="video/*"/>
                                 <!-- Drop Zone -->
-                                <div onclick="$('#file-input').trigger('click');" class="upload-drop-zone"
-                                     id="drop-zone">
+                                <div onclick="$('#file-input').trigger('click');" class="upload-drop-zone" id="drop-zone">
                                     Klikka või lohista peale
                                 </div>
                             </div>
