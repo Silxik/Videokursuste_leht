@@ -111,7 +111,9 @@ class Auth
                 }
 
                 if(!get_one("SELECT setup FROM person WHERE person_id={$person['person_id']}")){
-                    header('Location: ' . BASE_URL . 'user_setup');
+                    header('Location: ' . BASE_URL);
+                 // Previous version:
+                 // header('Location: ' . BASE_URL . 'user_setup');
                     exit();
                 }
 
