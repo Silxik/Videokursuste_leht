@@ -64,23 +64,32 @@
             <ul class="nav navbar-nav navbar-menu">
                 <li><a href="tags">Märksõnad</a></li>
                 <!-- <li><a href="#kontakt">Kontakt</a></li> -->
+                <?if($auth->is_admin){?>
+                    <li><a href="users">Kasutajate haldus</a></li>
+                <?}?>
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <li><input name="Otsi" placeholder="Otsi"></li>
                 <?php
                 //Menu options based on login status
-                if (!isset($_SESSION['person_id'])){ ?>
+                if (!isset($_SESSION['person_id'])){
+                    ?>
                     <li>
                         <a href="login"><button class="btn btn-primary">
                                 Logi Sisse
                             </button></a>
                     </li>
-                <?php } else { ?>
+                <?php } else {
+                    $names=get_first("SELECT username, person_firstname FROM person WHERE person_id=".$_SESSION['person_id']);
+                    $name=$names['person_firstname']==""?$names['username']:$names['person_firstname'];
+                    echo '<li><a href="user">'.$name.'</a></li>';
+                    ?>
                     <li>
                         <a href="logout"><button class="btn btn-primary">
                                 Logi Välja
                             </button></a>
                     </li>
+
                 <?php } ?>
                 <!-- <li><button>Liitu</button></li> -->
             </ul>

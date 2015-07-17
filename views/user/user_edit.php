@@ -65,11 +65,10 @@
     <script>
         function delete_video(video_id) {
             $.post("user/delete", {video_id: <?=$video['video_id']?>}, function (data) {
-                console.log(data);
                 if (data == '1') {
                     window.location.href = 'user';
                 } else {
-                    alert('Fail');
+                    console.log(data);
                 }
             });
         }

@@ -174,10 +174,18 @@ class user extends Controller
 
     function delete_post()
     {
-        $video_id = $_POST['video_id'];
-
-        delete('video_tags', "video_id = '$video_id'");
-        delete('video', "video_id='$video_id'");
-        exit("1");
+        $video=get_first("SELECT * FROM video WHERE video_id=".$_POST['video_id']);
+        if($_SESSION['person_id']==$video['person_id']){
+            $video_id = $_POST['video_id'];
+            delete('video_tags', "video_id = '$video_id'");
+            delete('video', "video_id='$video_id'");
+            if($video['link_type']==1) {
+                if(!unlink($video['link'])) {
+                    print_r(error_get_last());
+                    exit("0");
+                }
+            }
+            exit("1");
+        }
     }
 }
