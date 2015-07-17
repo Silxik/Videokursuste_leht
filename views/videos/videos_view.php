@@ -12,7 +12,7 @@
         </div>
         <div class="col-md-4">
             <h2><?= $video['title']?></h2>
-            <p><?= $video['description']?></p>
+            <p><?= $video['desc']?></p>
             <?foreach($tags as $tag):?>
                 <a href="tags/view/<?=$tag['tag_id']?>"><span class="label label-info"><?=$tag['tag_name']?></span></a>
             <?endforeach?>
