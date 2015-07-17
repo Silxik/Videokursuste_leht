@@ -112,7 +112,7 @@
                                     <label class="col-md-3 control-label" for="tags">Märksõnad</label>
 
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="tags" name="data[tags]"
+                                        <textarea class="form-control" id="tags" name="tags[tags]"
                                                   placeholder="Märksõnad, eraldatud komaga" rows="3"></textarea>
                                     </div>
                                 </div>

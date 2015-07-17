@@ -13,7 +13,7 @@
     <table class="table table-bordered">
         <tr>
             <th>Pealkiri</th>
-            <td><textarea class="form-control" id="desc" name="data[desc]"><?=$video['title']?></textarea></td>
+            <td><textarea class="form-control" id="desc" name="data[title]"><?=$video['title']?></textarea></td>
         </tr>
         <tr>
             <th>Kirjeldus</th>
@@ -26,7 +26,7 @@
         <tr>
             <th>Märksõnad</th>
             <td>
-                <textarea class="form-control" id="desc" name="data[desc]" rows="5"><?foreach($tags as $tag) {
+                <textarea class="form-control" id="desc" name="tags[tags]" rows="5"><?foreach($tags as $tag) {
                         $taggin[]=$tag['tag_name'];
                     }
                     echo(implode(', ', $taggin));?></textarea>
@@ -35,7 +35,6 @@
         <tr>
             <th>Kursus</th>
             <td><select name="data[course_id]">
-                    <option value="0"></option>
                     <?foreach($courses as $course):?>
                         <option value="<?=$course['course_id']?>" <?if($course['course_id']==$video_course['course_id']){echo("selected");}?> > <?=$course['course_name']?></option>
                     <? endforeach?>
@@ -53,9 +52,7 @@
         </button>
 
         <!-- DELETE -->
-        <button class="btn btn-danger" onclick="delete_video(<?= $video['person_id'] ?>)">
-            Kustuta
-        </button>
+        <button class="btn btn-danger" onclick="delete_video(<?= $video['video_id'] ?>)">Kustuta</button>
 
         <!-- SAVE -->
         <button class="btn btn-primary" onclick="$('#form').submit()">
@@ -66,8 +63,9 @@
     <!-- END BUTTONS -->
 
     <script>
-        function delete_video(user_id) {
+        function delete_video(video_id) {
             $.post("user/delete", {video_id: <?=$video['video_id']?>}, function (data) {
+                console.log(data);
                 if (data == '1') {
                     window.location.href = 'user';
                 } else {

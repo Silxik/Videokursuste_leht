@@ -175,6 +175,19 @@ function update($table, array $data, $where)
     }
 }
 
+function delete($table, $where)
+{
+    global $db;
+    if ($table) {
+        $sql = "DELETE FROM {$table} WHERE {$where}";
+        $id = mysqli_query($db, $sql) or db_error_out();
+        print_r(mysqli_error($db));
+        return ($id > 0) ? $id : FALSE;
+    } else {
+        return FALSE;
+        print_r(mysqli_error($db));
+    }
+}
 function escape(array $data)
 {
     global $db;
