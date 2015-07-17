@@ -5,6 +5,7 @@ class videos extends Controller
 
     function index()
     {
+        $this->courses = get_all("SELECT * FROM course ORDER BY 'date_added' ASC LIMIT 5");
         $this->persons = get_all("SELECT * FROM person");
         $this->videos = get_all("SELECT * FROM video");
         $_tags=get_all("SELECT * FROM video_tags NATURAL JOIN tag");

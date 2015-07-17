@@ -45,18 +45,9 @@
 <h1>Tere tulemast!</h1>
 <?php if ($auth->is_admin): ?>
 
-
     <div class="container">
         <div class="row">
-            <div class="col-md-12">
-                <h3>Lisatud videod</h3>
-                <ul class="list-group">
-                    <? foreach ($videos as $video): ?>
-                        <li class="list-group-item"><a href="user/view/<?= $video['video_id'] ?>"><?= $video['title'] ?></a>
-                        </li>
-                    <? endforeach ?>
-                </ul>
-            </div>
+
             <div class="col-md-6 col-md-offset-3">
                 <div class="well well-sm">
                     <legend class="text-center">Lisa video</legend>
@@ -79,7 +70,7 @@
                             <div id="yt-div">
                                 <!-- Link-->
                                 <div class="form-group">
-                                    <label class="col-md-3 control-label" for="email">Link</label>
+                                    <label class="col-md-3 control-label" for="link">Link</label>
 
                                     <div class="col-md-9">
                                         <input id="link" name="data[link]" type="text" placeholder="Link"
@@ -128,20 +119,23 @@
 
                                 <!-- Access -->
                                 <div class="form-group">
-                                    <label class="col-md-9 control-label" for="desc">Avalik (Nähtav sisselogimata kasutajatele)</label>
+                                    <label class="col-md-9 control-label" for="desc">Avalik (Nähtav sisselogimata
+                                        kasutajatele)</label>
 
                                     <div class="col-md-3">
                                         <input checked type="checkbox" class="form-control" id="access"
                                                name="data[public]">
                                     </div>
                                 </div>
-                                <select placeholder="Vali kursus" id="course" name="data[course_id]" style="width:350px;">
+                                <select placeholder="Vali kursus" id="course" name="data[course_id]"
+                                        style="width:350px;">
                                     <option disabled selected>Soovi korral lisa uus kursus või vali olemasolev</option>
                                     <option value="Lisa uus">Lisa uus</option>
                                     <?
-                                    foreach ($courses as $course) {?>
-                                        <option value="<?=$course['course_id']?>"><?=$course['course_name']?></option>
-                                    <? }?>
+                                    foreach ($courses as $course) { ?>
+                                        <option
+                                            value="<?= $course['course_id'] ?>"><?= $course['course_name'] ?></option>
+                                    <? } ?>
                                 </select>
 
                                 <div id="course-new">
@@ -176,8 +170,39 @@
                     </form>
                 </div>
             </div>
+
+            <div class="col-md-8 col-md-offset-2">
+                <div class="well well-sm">
+                    <legend class="text-center">Lisatud videod</legend>
+
+                    <? foreach ($courses as $course) { ?>
+                        <div class="list-group-item" id="<?= $course['course_id'] ?>">
+                            <legend>
+                                <a href="user/course/<?= $course['course_id'] ?>"><?= $course['course_name'] ?></a>
+                            </legend>
+                            <? foreach ($videos as $video) {
+                                if ($video['course_id'] == $course['course_id']) { ?>
+                                    <div><a href="user/view/<?= $video['video_id'] ?>"><?= $video['title'] ?></a></div>
+                                <? }
+                            } ?>
+                        </div>
+                    <? } ?>
+                    <div class="list-group-item">
+                        <legend>
+                            Kursuseta videod
+                        </legend>
+                        <? foreach ($videos as $video) {
+                            if ($video['course_id'] == 0) { ?>
+                                <a href="user/view/<?= $video['video_id'] ?>"><?= $video['title'] ?></a>
+                            <? }
+                        } ?>
+                    </div>
+                </div>
+            </div>
+
         </div>
     </div>
+
     <script>
 
         //functions
