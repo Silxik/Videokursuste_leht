@@ -58,6 +58,8 @@ class user extends Controller
                     insert('course', $course);
                     echo 'Kursus loodud!';
                 }
+            } else {
+                $data['course_id'] = 1;
             }
 
             // variable to check for existing videos

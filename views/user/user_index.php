@@ -192,7 +192,7 @@
                             Kursuseta videod
                         </legend>
                         <? foreach ($videos as $video) {
-                            if ($video['course_id'] == 0) { ?>
+                            if ($video['course_id'] == 1) { ?>
                                 <a href="user/view/<?= $video['video_id'] ?>"><?= $video['title'] ?></a>
                             <? }
                         } ?>
