@@ -18,7 +18,7 @@
             <?endforeach?>
             <p>Posted by: <strong><?=$video['username']?></strong></p>
         </div>
-        <?php if ($auth->active): ?>
+        <?php if (isset($_SESSION['person_id'])): ?>
             <div class="col-md-12">
                 <h3>Lisa kommentaar</h3>
                 <form method="POST">
