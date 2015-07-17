@@ -8,23 +8,29 @@
         </div>
     </div>
     <div>
-        <h2>Kursus 1</h2>
-        <ul class="list-unstyled video-list-thumbs row">
-            <? foreach ($videos as $video) { ?>
-                <li class="col-lg-3 col-sm-4 col-xs-6">
-                    <a href="<?=BASE_URL?>videos/view/<?=$video['video_id']?>" title="<?= $video['description'] ?>">
-                        <?php if($video['linktype']) {//uploaded video TODO: uploaded video icon ?>
-                            <img src="assets/img/thumb.png" alt="<?$video['description']?>" class="img-responsive"
-                                 height="130px"/>
-                        <?php } else {//youtube video ?>
-                        <img src="http://i.ytimg.com/vi/<?= $video['link']?>/mqdefault.jpg" alt="<?$video['description']?>" class="img-responsive"
-                             height="130px"/>
-                        <?php } ?>
-                        <h4><?= $video['title'] ?></h4>
-                    </a>
-                </li>
-
-            <? } ?>
-        </ul>
+        <?
+        $len = count($courses) - 1;
+        for ($i = $len; $i >= 0; $i--) {
+            $course = $courses[$i]; ?>
+        <h2><?= $course['course_name']?></h2>
+            <ul class="list-unstyled video-list-thumbs row">
+                <? foreach ($videos as $video) {
+                    if ($video['course_id'] == $course['course_id']) {?>
+                    <li class="col-lg-3 col-sm-4 col-xs-6">
+                        <a href="<?=BASE_URL?>videos/view/<?=$video['video_id']?>" title="<?= $video['description'] ?>">
+                            <? if($video['linktype']) {//uploaded video TODO: uploaded video icon ?>
+                                <img src="assets/img/thumb.png" alt="<?$video['description']?>" class="img-responsive"
+                                     height="130px"/>
+                            <? } else {//youtube video ?>
+                                <img src="http://i.ytimg.com/vi/<?= $video['link']?>/mqdefault.jpg" alt="<?$video['description']?>" class="img-responsive"
+                                     height="130px"/>
+                            <? }?>
+                            <h4><?= $video['title'] ?></h4>
+                        </a>
+                    </li>
+                <? }
+                }?>
+            </ul>
+        <? }?>
     </div>
 </div>

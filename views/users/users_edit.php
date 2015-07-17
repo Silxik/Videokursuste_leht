@@ -17,15 +17,15 @@
         </tr>
         <tr>
             <th>Active</th>
-            <td><input type="checkbox" name="data[active]" <?= $person['active'] != 0 ? 'checked="checked"' : '' ?>/>
+            <td><input type="checkbox" name="data[active]" <?= $person['active'] != 0 ? 'checked="checked"' : '' ?>/></td>
         </tr>
         <tr>
             <th>Admin</th>
-            <td><input type="checkbox" name="data[is_admin]" <?= $person['is_admin'] != 0 ? 'checked="checked"' : '' ?>/>
+            <td><input type="checkbox" name="data[is_admin]" <?= $person['is_admin'] != 0 ? 'checked="checked"' : '' ?>/></td>
         </tr>
         <tr>
             <th>Email</th>
-            <td><input type="text" name="data[email]" value="<?= $person['email'] ?>">
+            <td><input type="text" name="data[email]" value="<?= $person['email'] ?>"></td>
         </tr>
     </table>
 </form>
