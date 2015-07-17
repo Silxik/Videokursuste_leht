@@ -78,7 +78,7 @@ class user extends Controller
             $data['person_id'] = $_SESSION['person_id'];
             $data['public'] = isset($data['public']) ? 1 : 0;
 
-            if ($_FILES['upload']['size'] != 0) {//uploaded video
+            if (isset($_FILES['upload'])) {//uploaded video
                 //TODO: create video thumbnails
                 global $db;
                 $file = $_FILES['upload'];
@@ -101,6 +101,7 @@ class user extends Controller
                     } else {
                         echo 'Faili ei suudetud üles laadida';
                         return;
+
                     }
                     $data['link'] = $newname;
                 } catch (Exception $e) {
@@ -177,14 +178,14 @@ class user extends Controller
         $video=get_first("SELECT * FROM video WHERE video_id=".$_POST['video_id']);
         if($_SESSION['person_id']==$video['person_id']){
             $video_id = $_POST['video_id'];
-            delete('video_tags', "video_id = '$video_id'");
-            delete('video', "video_id='$video_id'");
-            if($video['link_type']==1) {
-                if(!unlink($video['link'])) {
+            if($video['linktype']==1) {
+                if(!unlink('uploads/'.$video['link'])) {
                     print_r(error_get_last());
                     exit("0");
                 }
             }
+            delete('video_tags', "video_id = '$video_id'");
+            delete('video', "video_id='$video_id'");
             exit("1");
         }
     }
