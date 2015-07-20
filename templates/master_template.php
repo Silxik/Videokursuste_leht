@@ -19,12 +19,6 @@
             padding-top:100px;
         }
 
-        .nav input {
-            margin-top:19px;
-            width:200px;
-            border-radius: 3px;
-        }
-
         .navbar-brand {
             font-size: 2em;
             font-weight: 100;
@@ -33,6 +27,62 @@
 
         .navbar-menu {
             padding-top: 7px;
+        }
+
+        .search-form .form-group {
+            float: right !important;
+            transition: all 0.35s, border-radius 0s;
+            width: 32px;
+            height: 32px;
+            background-color: #F8F8F8;
+            border-radius:0;
+            margin: 17px 40px 0 0;
+        }
+
+        .search-form .form-group input.form-control {
+            padding-right: 50px;
+            border: 0 none;
+            background: transparent;
+            box-shadow: none;
+            display: block;
+        }
+
+        .search-form .form-group input.form-control::-webkit-input-placeholder {
+            display: none;
+        }
+
+        .search-form .form-group input.form-control:-mox-placeholder {
+            display: none;
+        }
+
+        .search-form .form-group input.form-control::-mox-placeholder {
+            display: none;
+        }
+
+        .search-form .form-group input.form-control:-ms-input-placeholder {
+            display: none;
+        }
+
+        .search-form .form-group:hover,
+        .search-form .form-group.hover {
+            width: 100%;
+            border-radius:0;
+            background: #eaeaea;
+        }
+
+        .search-form .form-group span.form-control-feedback {
+            position: absolute;
+            top: -1px;
+            right: -2px;
+            z-index: 2;
+            display: block;
+            width: 34px;
+            height: 34px;
+            line-height: 34px;
+            text-align: center;
+            color: #3071A9;
+            left: initial;
+            font-size: 25px;
         }
 
 
@@ -69,7 +119,6 @@
                 <?}?>
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <li><input name="Otsi" placeholder="Otsi"></li>
                 <?php
                 //Menu options based on login status
                 if (!isset($_SESSION['person_id'])){
@@ -92,6 +141,15 @@
 
                 <?php } ?>
                 <!-- <li><button>Liitu</button></li> -->
+            </ul>
+            <ul class="nav navbar-nav navbar-right">
+                <form action="" class="search-form">
+                    <div class="form-group has-feedback">
+                        <label for="search" class="sr-only">Search</label>
+                        <input type="text" class="form-control" name="search" id="search" placeholder="Otsi...">
+                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
+                    </div>
+                </form>
             </ul>
         </div>
         <!--/.nav-collapse -->
