@@ -1,3 +1,8 @@
+<?php
+
+$page = $this->controller;
+
+?>
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -28,6 +33,7 @@
         .navbar-menu {
             padding-top: 7px;
         }
+
 
         .search-form .form-group {
             float: right !important;
@@ -85,7 +91,16 @@
             font-size: 25px;
         }
 
+        .search-form .form-group .showClass{
+            width: 100%;
+            border-radius: 4px 25px 25px 4px;
+            border-radius:0;
+            background: #eaeaea;
+        }
 
+        .active {
+            font-weight: bold;
+        }
     </style>
 
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -93,8 +108,26 @@
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <![endif]-->
+    <script>
+        window.onload=function() {
 
+            $('input').focusin(f    unction () {
 
+                $('.has-feedback').addClass("showClass");
+
+                console.log("this has focus");
+
+            });
+
+            $('input').focusout(function () {
+
+                $('.has-feedback').removeClass("showClass");
+
+                console.log("search form no longer has focus");
+
+            });
+        }
+    </script>
 </head>
 
 <body>
@@ -112,10 +145,10 @@
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-menu">
-                <li><a href="tags">Märksõnad</a></li>
+                <li><a class="<?= $page == 'tags' ? 'active' : ''?>" href="tags">Märksõnad</a></li>
                 <!-- <li><a href="#kontakt">Kontakt</a></li> -->
                 <?if($auth->is_admin){?>
-                    <li><a href="users">Kasutajate haldus</a></li>
+                    <li><a class="<?= $page == 'users' ? 'active' : ''?>"href="users">Kasutajate haldus</a></li>
                 <?}?>
             </ul>
             <ul class="nav navbar-nav navbar-right">
@@ -144,9 +177,9 @@
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <form action="" class="search-form">
-                    <div class="form-group has-feedback">
+                    <div id="search" class="form-group has-feedback">
                         <label for="search" class="sr-only">Search</label>
-                        <input type="text" class="form-control" name="search" id="search" placeholder="Otsi...">
+                        <input type="text" class="form-control" name="search" placeholder="Otsi...">
                         <span class="glyphicon glyphicon-search form-control-feedback"></span>
                     </div>
                 </form>
