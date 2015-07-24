@@ -17,7 +17,6 @@ $page = $this->controller;
 
     <!-- Bootstrap core CSS -->
     <link href="assets/components/bootstrap/3.3.0/css/bootstrap.min.css" rel="stylesheet">
-
     <!-- Custom styles for this template -->
     <style>
         body {
@@ -34,72 +33,70 @@ $page = $this->controller;
             padding-top: 7px;
         }
 
+        .searchbox {
+            position: relative;
+            min-width: 50px;
+            width: 0%;
+            height: 50px;
+            float: right;
+            overflow: hidden;
+            margin: 13px 20px 0 0;
 
-        .search-form .form-group {
-            float: right !important;
-            transition: all 0.35s, border-radius 0s;
-            width: 32px;
-            height: 32px;
-            background-color: #F8F8F8;
-            border-radius:0;
-            margin: 17px 40px 0 0;
+            -webkit-transition: width 0.3s;
+            -moz-transition: width 0.3s;
+            -ms-transition: width 0.3s;
+            -o-transition: width 0.3s;
+            transition: width 0.3s;
         }
 
-        .search-form .form-group input.form-control {
-            padding-right: 50px;
-            border: 0 none;
-            background: transparent;
-            box-shadow: none;
-            display: block;
-        }
-
-        .search-form .form-group input.form-control::-webkit-input-placeholder {
-            display: none;
-        }
-
-        .search-form .form-group input.form-control:-mox-placeholder {
-            display: none;
-        }
-
-        .search-form .form-group input.form-control::-mox-placeholder {
-            display: none;
-        }
-
-        .search-form .form-group input.form-control:-ms-input-placeholder {
-            display: none;
-        }
-
-        .search-form .form-group:hover,
-        .search-form .form-group.hover {
-            width: 100%;
-            border-radius:0;
+        .searchbox-input {
+            top: 0;
+            right: 0;
+            border: 0;
+            outline: 0;
             background: #eaeaea;
+            width: 350px;
+            height: 40px;
+            margin: 0;
+            padding: 0 55px 0 10px;
+            font-size: 17px;
         }
 
-        .search-form .form-group span.form-control-feedback {
+        .searchbox-submit,
+        .searchbox-icon {
+            width: 50px;
+            height: 40px;
+            display: block;
             position: absolute;
-            top: -1px;
-            right: -2px;
-            z-index: 2;
-            display: block;
-            width: 34px;
-            height: 34px;
-            line-height: 34px;
-            text-align: center;
-            color: #3071A9;
-            left: initial;
+            top: 0;
             font-size: 25px;
+            right: 0;
+            padding: 0;
+            margin: 0;
+            border: 0;
+            outline: 0;
+            line-height: 40px;
+            text-align: center;
+            cursor: pointer;
+            color: #6991AC;
+            background: #F8F8F8;
         }
 
-        .search-form .form-group .showClass{
+        .searchbox-open {
             width: 100%;
-            border-radius: 4px 25px 25px 4px;
-            border-radius:0;
-            background: #eaeaea;
+            color: #777;
         }
 
-        .active {
-            font-weight: bold;
+        .byline {
+            position: absolute;
+            top: 150px;
+            left: 30%;
+            text-align: center;
+            font-size: 13px;
+        }
+
+        .byline a {
+            text-decoration: none;
         }
     </style>
 
@@ -107,25 +104,47 @@ $page = $this->controller;
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <![endif]-->
     <script>
-        window.onload=function() {
-
-            $('input').focusin(f    unction () {
-
-                $('.has-feedback').addClass("showClass");
-
-                console.log("this has focus");
-
+        $(document).ready(function(){
+            var submitIcon = $('.searchbox-icon');
+            var inputBox = $('.searchbox-input');
+            var searchBox = $('.searchbox');
+            var isOpen = false;
+            submitIcon.click(function(){
+                if(isOpen == false){
+                    searchBox.addClass('searchbox-open');
+                    inputBox.focus();
+                    isOpen = true;
+                } else {
+                    searchBox.removeClass('searchbox-open');
+                    inputBox.focusout();
+                    isOpen = false;
+                }
             });
-
-            $('input').focusout(function () {
-
-                $('.has-feedback').removeClass("showClass");
-
-                console.log("search form no longer has focus");
-
+            submitIcon.mouseup(function(){
+                return false;
             });
+            searchBox.mouseup(function(){
+                return false;
+            });
+            $(document).mouseup(function(){
+                if(isOpen == true){
+                    $('.searchbox-icon').css('display','block');
+                    submitIcon.click();
+                }
+            });
+        });
+        function buttonUp(){
+            var inputVal = $('.searchbox-input').val();
+            inputVal = $.trim(inputVal).length;
+            if( inputVal !== 0){
+                $('.searchbox-icon').css('display','');
+            } else {
+                $('.searchbox-input').val('');
+                $('.searchbox-icon').css('display','block');
+            }
         }
     </script>
 </head>
@@ -176,12 +195,10 @@ $page = $this->controller;
                 <!-- <li><button>Liitu</button></li> -->
             </ul>
             <ul class="nav navbar-nav navbar-right">
-                <form action="" class="search-form">
-                    <div id="search" class="form-group has-feedback">
-                        <label for="search" class="sr-only">Search</label>
-                        <input type="text" class="form-control" name="search" placeholder="Otsi...">
-                        <span class="glyphicon glyphicon-search form-control-feedback"></span>
-                    </div>
+                <form class="searchbox">
+                    <input type="search" placeholder="Otsi..." name="search" class="searchbox-input" onkeyup="buttonUp();" required>
+                    <!-- <input type="submit" class="searchbox-submit" value="GO"> -->
+                    <span class="glyphicon glyphicon-search searchbox-icon"></span>
                 </form>
             </ul>
         </div>
