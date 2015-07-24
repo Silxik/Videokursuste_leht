@@ -62,8 +62,7 @@ $page = $this->controller;
             font-size: 17px;
         }
 
-        .searchbox-submit,
-        .searchbox-icon {
+        .searchbox-submit, .searchbox-icon {
             width: 50px;
             height: 40px;
             display: block;
@@ -99,54 +98,12 @@ $page = $this->controller;
             text-decoration: none;
         }
     </style>
-
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
     <script src="https://oss.maxcdn.com/libs/respond.js/1.3.0/respond.min.js"></script>
     <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.3/jquery.min.js"></script>
     <![endif]-->
-    <script>
-        $(document).ready(function(){
-            var submitIcon = $('.searchbox-icon');
-            var inputBox = $('.searchbox-input');
-            var searchBox = $('.searchbox');
-            var isOpen = false;
-            submitIcon.click(function(){
-                if(isOpen == false){
-                    searchBox.addClass('searchbox-open');
-                    inputBox.focus();
-                    isOpen = true;
-                } else {
-                    searchBox.removeClass('searchbox-open');
-                    inputBox.focusout();
-                    isOpen = false;
-                }
-            });
-            submitIcon.mouseup(function(){
-                return false;
-            });
-            searchBox.mouseup(function(){
-                return false;
-            });
-            $(document).mouseup(function(){
-                if(isOpen == true){
-                    $('.searchbox-icon').css('display','block');
-                    submitIcon.click();
-                }
-            });
-        });
-        function buttonUp(){
-            var inputVal = $('.searchbox-input').val();
-            inputVal = $.trim(inputVal).length;
-            if( inputVal !== 0){
-                $('.searchbox-icon').css('display','');
-            } else {
-                $('.searchbox-input').val('');
-                $('.searchbox-icon').css('display','block');
-            }
-        }
-    </script>
 </head>
 
 <body>
@@ -219,6 +176,47 @@ $page = $this->controller;
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
+<script>
+    window.onload = function() {
+        var submitIcon = $('.searchbox-icon');
+        var inputBox = $('.searchbox-input');
+        var searchBox = $('.searchbox');
+        var isOpen = false;
+        submitIcon.click(function () {
+            if (isOpen == false) {
+                searchBox.addClass('searchbox-open');
+                inputBox.focus();
+                isOpen = true;
+            } else {
+                searchBox.removeClass('searchbox-open');
+                inputBox.focusout();
+                isOpen = false;
+            }
+        });
+        submitIcon.mouseup(function () {
+            return false;
+        });
+        searchBox.mouseup(function () {
+            return false;
+        });
+        $(document).mouseup(function () {
+            if (isOpen == true) {
+                $('.searchbox-icon').css('display', 'block');
+                submitIcon.click();
+            }
+        });
+    }
+    function buttonUp(){
+        var inputVal = $('.searchbox-input').val();
+        inputVal = $.trim(inputVal).length;
+        if( inputVal !== 0){
+            $('.searchbox-icon').css('display','');
+        } else {
+            $('.searchbox-input').val('');
+            $('.searchbox-icon').css('display','block');
+        }
+    }
+</script>
 <script src="assets/components/jquery/1.10.2/jquery-1.10.2.min.js"></script>
 <script src="assets/components/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 </body>
