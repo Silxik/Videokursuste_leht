@@ -36,6 +36,12 @@
         <th>Kursus</th>
         <td><?= $course['course_name']?></td>
     </tr>
+    <tr>
+        <th>Subtiitrid</th>
+        <td>
+            <span><?= ($s = $video['subs']) ? $s : 'Puuduvad'?></span>
+        </td>
+    </tr>
 </table>
 
 <!-- EDIT BUTTON -->

@@ -98,6 +98,48 @@ $page = $this->controller;
             text-decoration: none;
         }
     </style>
+    <script>
+        var init = [];
+        init.push(function() {
+            var submitIcon = $('.searchbox-icon');
+            var inputBox = $('.searchbox-input');
+            var searchBox = $('.searchbox');
+            var isOpen = false;
+            submitIcon.click(function () {
+                if (isOpen == false) {
+                    searchBox.addClass('searchbox-open');
+                    inputBox.focus();
+                    isOpen = true;
+                } else {
+                    searchBox.removeClass('searchbox-open');
+                    inputBox.focusout();
+                    isOpen = false;
+                }
+            });
+            submitIcon.mouseup(function () {
+                return false;
+            });
+            searchBox.mouseup(function () {
+                return false;
+            });
+            $(document).mouseup(function () {
+                if (isOpen == true) {
+                    $('.searchbox-icon').css('display', 'block');
+                    submitIcon.click();
+                }
+            });
+        });
+        function buttonUp(){
+            var inputVal = $('.searchbox-input').val();
+            inputVal = $.trim(inputVal).length;
+            if( inputVal !== 0){
+                $('.searchbox-icon').css('display','');
+            } else {
+                $('.searchbox-input').val('');
+                $('.searchbox-icon').css('display','block');
+            }
+        }
+    </script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
     <!--[if lt IE 9]>
     <script src="https://oss.maxcdn.com/libs/html5shiv/3.7.0/html5shiv.js"></script>
@@ -176,48 +218,14 @@ $page = $this->controller;
 <!-- Bootstrap core JavaScript
 ================================================== -->
 <!-- Placed at the end of the document so the pages load faster -->
+<script src="assets/components/jquery/1.10.2/jquery-1.10.2.min.js"></script>
+<script src="assets/components/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 <script>
     window.onload = function() {
-        var submitIcon = $('.searchbox-icon');
-        var inputBox = $('.searchbox-input');
-        var searchBox = $('.searchbox');
-        var isOpen = false;
-        submitIcon.click(function () {
-            if (isOpen == false) {
-                searchBox.addClass('searchbox-open');
-                inputBox.focus();
-                isOpen = true;
-            } else {
-                searchBox.removeClass('searchbox-open');
-                inputBox.focusout();
-                isOpen = false;
-            }
-        });
-        submitIcon.mouseup(function () {
-            return false;
-        });
-        searchBox.mouseup(function () {
-            return false;
-        });
-        $(document).mouseup(function () {
-            if (isOpen == true) {
-                $('.searchbox-icon').css('display', 'block');
-                submitIcon.click();
-            }
-        });
-    }
-    function buttonUp(){
-        var inputVal = $('.searchbox-input').val();
-        inputVal = $.trim(inputVal).length;
-        if( inputVal !== 0){
-            $('.searchbox-icon').css('display','');
-        } else {
-            $('.searchbox-input').val('');
-            $('.searchbox-icon').css('display','block');
+        for (var i in init) {
+            init[i]();
         }
     }
 </script>
-<script src="assets/components/jquery/1.10.2/jquery-1.10.2.min.js"></script>
-<script src="assets/components/bootstrap/3.3.0/js/bootstrap.min.js"></script>
 </body>
 </html>
