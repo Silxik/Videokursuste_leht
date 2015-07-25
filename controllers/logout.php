@@ -10,7 +10,8 @@ class logout extends Controller
 {
     function index()
     {
+        unset($_COOKIE['teodor_SID']);
         session_destroy();
         header('Location: ' . BASE_URL);
     }
-} 
+}
