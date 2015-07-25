@@ -1,0 +1,59 @@
+1
+00:00:07,000 --> 00:00:06,000
+Hello everyone!
+
+2
+00:00:00,000 --> 00:00:08,000
+In this tutorial, what I'm gonna do is 
+
+3
+00:00:00,000 --> 00:00:12,000
+give you a really quick basic introduction to the PHP language
+
+4
+00:00:00,000 --> 00:00:16,000
+and I'm not gonna go over everything there is to know about the PHP language
+
+5
+00:00:00,000 --> 00:00:19,000
+but I feel that if you wanna learn how to code PHP
+
+6
+00:00:00,000 --> 00:00:24,000
+there are several components to PHP that you should be aware of.
+
+7
+00:00:00,000 --> 00:00:25,000
+So let's just go ahead and get started here,
+
+8
+00:00:00,000 --> 00:00:27,000
+it's not gonna take too long.
+
+9
+00:00:00,000 --> 00:00:30,000
+So first of all, what is PHP?
+
+10
+00:00:00,000 --> 00:00:32,000
+If someone walks up to you and asks:
+
+11
+00:00:00,000 --> 00:00:34,500
+"Hey what is PHP? What does it stand for?"
+
+12
+00:00:00,000 --> 00:00:36,000
+Well, you should be able to respond with:
+
+13
+00:00:00,000 --> 00:00:39,000
+"Well, PHP is a hypertext preprocessor!"
+
+14
+00:00:00,000 --> 00:00:40,900
+So they gonna pretty much think you're pretty smart
+
+15
+00:00:00,000 --> 00:00:46,000
+to know what you are talking about.

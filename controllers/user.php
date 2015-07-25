@@ -27,7 +27,7 @@ class user extends Controller
         $video_id = $this->params[0];
         $this->video = get_first("SELECT * FROM video WHERE video_id='$video_id'");
         $this->video_course = get_first("SELECT * FROM course WHERE course_id=(SELECT course_id FROM video WHERE video_id = '$video_id')");
-        $this->courses = get_all("SELECT * FROM course WHERE person_id=".$_SESSION['person_id']." OR course_id=1");
+        $this->courses = get_all("SELECT * FROM course WHERE person_id=" . $_SESSION['person_id'] . " OR course_id=1");
         $this->tags = get_all("SELECT tag_name FROM video_tags NATURAL JOIN tag WHERE video_id='$video_id'");
     }
 
@@ -170,16 +170,41 @@ class user extends Controller
             insert('video_tags', $videotags);
         }
         update('video', $data, "video_id='$video_id'");
-        header('Location: ' . BASE_URL . 'user/view/' . $this->params[0]);
+
+        if (isset($_FILES['upload'])) {//uploaded transcript
+            $file = $_FILES['upload'];
+            $filename = basename($file['name']);
+            $info = pathinfo($filename);
+            $ext = $info['extension']; // get the extension of the file
+            $allowed = array('srt');
+            if (!in_array($ext, $allowed)) {
+                echo 'Failitüüp ' . $ext . ' pole lubatud!';
+                return;
+            }
+            try {
+                if ($wat = move_uploaded_file($file['tmp_name'], "uploads/$video_id.$ext")) {
+                    update('video', ['subs' => "$video_id.$ext"], "video_id='$video_id'");
+                    echo $filename . ' üles laetud!' . PHP_EOL;
+                } else {
+                    echo 'Faili ei suudetud üles laadida';
+                    return;
+                }
+            } catch (Exception $e) {
+                echo 'Midagi läks valesti: ' . $e->getMessage() . PHP_EOL;
+                return;
+            }
+        }
+
+        header('refresh:1; url=' . BASE_URL . 'user/view/' . $this->params[0]);
     }
 
     function delete_post()
     {
-        $video=get_first("SELECT * FROM video WHERE video_id=".$_POST['video_id']);
-        if($_SESSION['person_id']==$video['person_id']){
+        $video = get_first("SELECT * FROM video WHERE video_id=" . $_POST['video_id']);
+        if ($_SESSION['person_id'] == $video['person_id']) {
             $video_id = $_POST['video_id'];
-            if($video['linktype']==1) {
-                if(!unlink('uploads/'.$video['link'])) {
+            if ($video['linktype'] == 1) {
+                if (!unlink('uploads/' . $video['link'])) {
                     print_r(error_get_last());
                     exit("0");
                 }
