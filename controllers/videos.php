@@ -27,7 +27,7 @@ class videos extends Controller
         global $db;
         $output='';
         $searchTxt=$_POST['searchTxt'];
-        $sql="SELECT * FROM video WHERE title LIKE '%$searchTxt%'";
+        $sql="SELECT * FROM video WHERE title LIKE '%$searchTxt%' OR video_desc LIKE '%$searchTxt%'";
         $q = mysqli_query($db, $sql) or db_error_out();
         $count=mysqli_num_rows($q);
         if($count==0){
@@ -37,7 +37,7 @@ class videos extends Controller
             while ($result= mysqli_fetch_assoc($q)) {
                 $video_id=$result['video_id'];
                 $title=$result['title'];
-                $desc=$result['desc'];
+                $desc=$result['video_desc'];
                 $output.='<li><a href="'.BASE_URL.'videos/view/'.$video_id.'">'.$title.'</a></li>';
 
             }
