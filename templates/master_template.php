@@ -204,7 +204,7 @@ $page = $this->controller;
                     <!-- <input type="submit" class="searchbox-submit" value="GO"> -->
                     <span class="glyphicon glyphicon-search searchbox-icon"></span>
                 </form>
-                <div id="output"></div>
+                <ul id="output"></ul>
             </ul>
         </div>
         <!--/.nav-collapse -->
