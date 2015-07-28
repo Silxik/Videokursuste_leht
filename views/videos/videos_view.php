@@ -5,14 +5,22 @@
     }
     #transcript {
         background: #CCC;
-        width: 20%;
+        width: 25%;
         float: left;
         height: 100%;
         margin: 0px;
         padding: 0px;
         list-style-type: none;
         overflow-y: scroll;
+        padding: 10px;
     }
+    #transcript li {
+        cursor: pointer;
+    }
+    #transcript li:hover {
+        color: #000;
+        text-decoration: underline;
+     }
     .player {
         height: 360px;
         background: #444;
@@ -41,7 +49,7 @@
     }
     #videoWrap {
         float: left;
-        width: 80%;
+        width: 75%;
         height: 100%;
     }
     #videoPlayer {
@@ -49,15 +57,11 @@
         width: 100%;
         height: 100%;
     }
-    #play, #volume, #current, #seekbg {
+    #play, #volume, #seekbg {
         float: left;
     }
-    #fullScr, #duration {
+    #fullScr {
         float: right;
-    }
-    #duration, #current {
-        color: #FFF;
-        font-size: 14px;
     }
     #seekbg {
         position: relative;
@@ -80,6 +84,12 @@
     .glyphicon-unchecked:hover {
         color: #FFF;
     }
+    .time {
+        display: block;
+        float: left;
+        color: #FFF;
+        font-size: 14px;
+    }
 </style>
 <script>
     init.push(function() {
@@ -89,11 +99,11 @@
                 time = Array(l);
                 for (; i < l; i++) {
                     s = srt[i].split('\r\n');
-                    html += '<li>' + s.slice(2, s.length).join('<br/>') + '</li>';
+                    subs_html += '<li>' + s.slice(2, s.length).join('<br/>') + '</li>';
                     s = s[1].split('-->')[1].replace(',', ".").split(':');
                     time[i] = s[0] * 3600 + s[1] * 60 + 1 * s[2];
                 }
-                ul.html(html);
+                ul.html(subs_html);
                 lis = $('#transcript > li');
                 lis[0].className = 'activeText';
             });
@@ -103,8 +113,8 @@
             $('#duration').text(duration);
         }
         var player = $('#videoPlayer'), subs = '<?= $video['subs'] ? $video['subs'] : 0?>',
-            html = '', time, cur_id = 0, lis, ul = $('#transcript'), offset = (ul[0].offsetTop + ul[0].clientHeight * 0.5) << 0,
-            duration;
+            subs_html = '', time, cur_id = 0, lis, ul = $('#transcript'), offset = (ul[0].offsetTop + ul[0].clientHeight * 0.5) << 0,
+            duration, seeking = 0;
         setDuration();
         if (!duration) {
             player.on('loadeddata', function () {
@@ -146,9 +156,19 @@
             }
             player[0].currentTime = i == 0 ? 0 : time[i-1];
         });
-        $('#seekbg').on('mousedown', function(e){//TODO: video scrollbar
-            //console.log(100* player[0].currentTime / duration);
-            //player[0].currentTime =
+        $('#seekbg').on('mousedown', function(e){
+            //console.log(duration, player[0].currentTime, 100* player[0].currentTime / duration);
+            seeking = [this.clientWidth, this.offsetLeft];
+        });
+        $('body').on('mousemove', function(e) {
+            if (seeking) {
+
+                player[0].currentTime =  duration * (e.clientX - seeking[1]) / seeking[0];
+                $('#seek').css('width', (100* player[0].currentTime / duration) + '%');
+            }
+        });
+        $('body').on('mouseup', function(e) {
+            seeking = 0;
         });
         $('#play').click(function () {
             if (player[0].paused) {
@@ -197,11 +217,14 @@
                 <div id="volume">
                     <span class="glyphicon glyphicon-volume-up"></span>
                 </div>
-                <span id="current" >0:00</span>
+                <span class="time">
+                    <span id="current" >0:00</span>
+                    /
+                    <span id="duration">0:00</span>
+                </span>
                 <div id="fullScr">
                     <span class="glyphicon glyphicon-fullscreen"></span>
                 </div>
-                <span id="duration">0:00</span>
             </div>
         </div>
 
@@ -211,10 +234,11 @@
                 allowfullscreen></iframe>
     <?php } ?>
 </div>
+
 <div class="container">
     <div class="row">
         <h2><?= $video['title'] ?></h2>
-        <p><?= $video['desc'] ?></p>
+        <p><?= $video['video_desc'] ?></p>
         <? foreach ($tags as $tag): ?>
             <a href="tags/view/<?= $tag['tag_id'] ?>"><span class="label label-info"><?= $tag['tag_name'] ?></span></a>
         <? endforeach ?>
