@@ -24,16 +24,36 @@ class videos extends Controller
 
     function index_ajax()
     {
-        echo "\$_POST:<br>";
-        var_dump($_POST);
+        global $db;
+        $output='';
+        $searchTxt=$_POST['searchTxt'];
+        $sql="SELECT * FROM video WHERE title LIKE '%$searchTxt%'";
+        $q = mysqli_query($db, $sql) or db_error_out();
+        $count=mysqli_num_rows($q);
+        if($count==0){
+            $output='There was no search results!';
+        }
+        else{
+            while ($result= mysqli_fetch_assoc($q)) {
+                $video_id=$result['video_id'];
+                $title=$result['title'];
+                $desc=$result['desc'];
+                $output.='<li><a href="'.BASE_URL.'videos/view/'.$video_id.'">'.$title.'</a></li>';
+
+            }
+
+        }
+        echo $output;
+        /*echo "\$_POST:<br>";
+        var_dump($_POST);*/
     }
 
     function index_post()
     {
-        echo "\$_POST:<br>";
-        var_dump($_POST);
-
+/*        echo "\$_POST:<br>";
+        var_dump($_POST);*/
     }
+
     function view_post(){
         if(isset($_POST['data'])&& isset($_SESSION['person_id'])){
             $video_id=$this->params[0];
