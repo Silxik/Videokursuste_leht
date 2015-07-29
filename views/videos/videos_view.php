@@ -60,7 +60,7 @@
     #play, #volume, #seekbg {
         float: left;
     }
-    #fullScr {
+    #fullScr, #addSub {
         float: right;
     }
     #seekbg {
@@ -79,7 +79,7 @@
         position: absolute;
         color: #AAA;
         top: -5px;
-        left: -10px;
+        left: -15px;
     }
     .glyphicon-unchecked:hover {
         color: #FFF;
@@ -89,6 +89,7 @@
         float: left;
         color: #FFF;
         font-size: 14px;
+        line-height: 30px;
     }
 </style>
 <script>
@@ -96,42 +97,57 @@
         function getTranscript() {
             $.post("uploads/" + subs, null, function (data) {
                 var srt = data.split('\r\n\r\n'), i = 0, l = srt.length, s;
-                time = Array(l);
+                subTime = Array(l);
                 for (; i < l; i++) {
                     s = srt[i].split('\r\n');
                     subs_html += '<li>' + s.slice(2, s.length).join('<br/>') + '</li>';
                     s = s[1].split('-->')[1].replace(',', ".").split(':');
-                    time[i] = s[0] * 3600 + s[1] * 60 + 1 * s[2];
+                    subTime[i] = s[0] * 3600 + s[1] * 60 + 1 * s[2];
                 }
                 ul.html(subs_html);
-                lis = $('#transcript > li');
-                lis[0].className = 'activeText';
+                li_elements = $('#transcript > li');
+                li_elements[0].className = 'activeText';
             });
+        }
+        function formatTime(seconds) {
+            var h = seconds / 3600 << 0,
+                m = (seconds - h * 3600) / 60 << 0,
+                s =  seconds - (h * 3600) - (m * 60) << 0;
+            m = m ? m : '0';
+            s = s < 10 ? "0" + s : s;
+            return h ? h + ':' + m + ':' + s : m ? m + ':' + s : s;
         }
         function setDuration() {
             duration = Math.ceil(player[0].duration);
-            $('#duration').text(duration);
+            $('#duration').text(formatTime(duration));
+        }
+        function moveToTime(seconds) {
+            $('#seek').css('width', (100* seconds / duration) + '%');
+            $('.glyphicon-unchecked').css('left', (seconds / duration) * $('#seekbg')[0].clientWidth -15 + 'px');
+            $('#current').text(formatTime(seconds));
+        }
+        function scrollToText(id) {
+            li_elements[cur_id].className = '';
+            cur_id = id;
+            li_elements[cur_id].className = 'activeText';
+            ul[0].scrollTop = li_elements[cur_id].offsetTop + li_elements[cur_id].clientHeight / 2 - offset;
         }
         var player = $('#videoPlayer'), subs = '<?= $video['subs'] ? $video['subs'] : 0?>',
-            subs_html = '', time, cur_id = 0, lis, ul = $('#transcript'), offset = (ul[0].offsetTop + ul[0].clientHeight * 0.5) << 0,
-            duration, seeking = 0;
+            subs_html = '', subTime, cur_id = 0, li_elements, ul = $('#transcript'), offset = (ul[0].offsetTop + ul[0].clientHeight * 0.5) << 0,
+            duration, seeking;
         setDuration();
         if (!duration) {
             player.on('loadeddata', function () {
                 setDuration();
             });
         }
-
         if (subs) {
             getTranscript();
             player.on('seeking', function () {
                 var i = 0, t = player[0].currentTime;
-                for (; i < time.length; i++) {
-                    if (time[i] > t) {
-                        lis[cur_id].className = '';
-                        cur_id = i;
-                        lis[cur_id].className = 'activeText';
-                        ul[0].scrollTop = lis[cur_id].offsetTop + lis[cur_id].clientHeight / 2 - offset;
+                for (; i < subTime.length; i++) {
+                    if (subTime[i] > t) {
+                        scrollToText(i);
                         break;
                     }
                 }
@@ -139,32 +155,30 @@
         }
         player.on('timeupdate', function () {
             if (subs) {
-                if (time[cur_id] <= player[0].currentTime) {
-                    lis[cur_id].className = '';
-                    cur_id ++;
-                    lis[cur_id].className = 'activeText';
-                    ul[0].scrollTop = lis[cur_id].offsetTop + lis[cur_id].clientHeight / 2 - offset;
+                if (subTime[cur_id] <= player[0].currentTime && cur_id < li_elements.length) {
+                    scrollToText(cur_id + 1);
                 }
             }
-            $('#seek').css('width', (100* player[0].currentTime / duration) + '%');
-            $('#current').text(Math.round(player[0].currentTime));
+            moveToTime(player[0].currentTime);
         });
         $('#transcript').click(function(e){
             var i = 0, el = e.target;
             while( (el = el.previousSibling) != null ) {
                 i++;
             }
-            player[0].currentTime = i == 0 ? 0 : time[i-1];
+            player[0].currentTime = i == 0 ? 0 : subTime[i-1];
         });
         $('#seekbg').on('mousedown', function(e){
-            //console.log(duration, player[0].currentTime, 100* player[0].currentTime / duration);
             seeking = [this.clientWidth, this.offsetLeft];
+            var percent = (e.clientX - seeking[1]) / seeking[0];
+            percent = percent > 1 ? 1 : percent < 0 ? 0 : percent;
+            moveToTime(player[0].currentTime = duration * percent);
         });
         $('body').on('mousemove', function(e) {
             if (seeking) {
-
-                player[0].currentTime =  duration * (e.clientX - seeking[1]) / seeking[0];
-                $('#seek').css('width', (100* player[0].currentTime / duration) + '%');
+                var percent = (e.clientX - seeking[1]) / seeking[0];
+                percent = percent > 1 ? 1 : percent < 0 ? 0 : percent;
+                moveToTime(player[0].currentTime = duration * percent);
             }
         });
         $('body').on('mouseup', function(e) {
@@ -209,7 +223,7 @@
             <ul id="transcript">
                 <li>TEST</li>
             </ul>
-            <div id="seekbg"><div class="glyphicon glyphicon-unchecked"></div><div id="seek"></div></div>
+            <div id="seekbg"><div id="seek"></div><div class="glyphicon glyphicon-unchecked"></div></div>
             <div class="videoControls">
                 <div id="play">
                     <span class="glyphicon glyphicon-play"></span>
@@ -225,6 +239,7 @@
                 <div id="fullScr">
                     <span class="glyphicon glyphicon-fullscreen"></span>
                 </div>
+                <div id="addSub"><span class="glyphicon glyphicon-comment"></span></div>
             </div>
         </div>
 
