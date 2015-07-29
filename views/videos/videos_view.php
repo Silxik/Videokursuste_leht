@@ -57,7 +57,7 @@
         width: 100%;
         height: 100%;
     }
-    #play, #volume, #seekbg {
+    #play, #volume, #seekbg, #speed {
         float: left;
     }
     #fullScr, #addSub {
@@ -74,6 +74,10 @@
         background: #F00;
         height: 10px;
         width: 0%;
+    }
+    #speed {
+        font-size: 18px;
+        line-height: 30px;
     }
     .glyphicon-unchecked {
         position: absolute;
@@ -228,6 +232,9 @@
                 <div id="play">
                     <span class="glyphicon glyphicon-play"></span>
                 </div>
+                <div id="speed">
+                    1.0x
+                </div>
                 <div id="volume">
                     <span class="glyphicon glyphicon-volume-up"></span>
                 </div>
@@ -239,7 +246,8 @@
                 <div id="fullScr">
                     <span class="glyphicon glyphicon-fullscreen"></span>
                 </div>
-                <div id="addSub"><span class="glyphicon glyphicon-comment"></span></div>
+                <div id="addSub"><span class="glyphicon glyphicon-pencil"></span></div>
+
             </div>
         </div>
 
