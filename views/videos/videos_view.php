@@ -27,6 +27,10 @@
         min-width: 500px;
     }
     .videoControls {
+        -webkit-user-select:none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
         float: left;
         width: 100%;
         height: 30px;
@@ -57,13 +61,13 @@
         width: 100%;
         height: 100%;
     }
-    #play, #volume, #seekbg, #speed {
+    #play, #volume, #seekBg, #speed, #volBarWrap {
         float: left;
     }
     #fullScr, #addSub {
         float: right;
     }
-    #seekbg {
+    #seekBg {
         position: relative;
         background: #555;
         height: 10px;
@@ -75,6 +79,35 @@
         height: 10px;
         width: 0%;
     }
+    #volBarWrap {
+        width: 0px;
+        -webkit-transition: width 0.6s ease-in;
+        -moz-transition: width 0.6s ease-in;
+        -ms-transition: width 0.6s ease-in;
+        -o-transition: width 0.6s ease-in;
+        transition: width 0.6s ease-in;
+        line-height: 30px;
+    }
+    #volBar {
+        background: #F00;
+        width: 100%;
+        height: 8px;
+    }
+    #volBarBg {
+        background: #555;
+        width: 100%;
+        height: 8px;
+        margin-top: 11px;
+    }
+    #volume:hover + #volBarWrap, #volBarWrap:hover{
+        color: #00F;
+        width: 100px;
+        -webkit-transition: width 0.2s;
+        -moz-transition: width 0.2s;
+        -ms-transition: width 0.2s;
+        -o-transition: width 0.2s;
+        transition: width 0.2s;
+    }
     #speed {
         font-size: 18px;
         line-height: 30px;
@@ -84,9 +117,16 @@
         color: #AAA;
         top: -5px;
         left: -15px;
+        opacity: 0;
+        -webkit-transition: opacity 0.2s;
+        -moz-transition: opacity 0.2s;
+        -ms-transition: opacity 0.2s;
+        -o-transition: opacity 0.2s;
+        transition: opacity 0.2s;
     }
-    .glyphicon-unchecked:hover {
+    #seekBg:hover .glyphicon-unchecked {
         color: #FFF;
+        opacity: 1;
     }
     .time {
         display: block;
@@ -94,6 +134,7 @@
         color: #FFF;
         font-size: 14px;
         line-height: 30px;
+        margin-left: 5px;
     }
 </style>
 <script>
@@ -125,20 +166,28 @@
             duration = Math.ceil(player[0].duration);
             $('#duration').text(formatTime(duration));
         }
-        function moveToTime(seconds) {
-            $('#seek').css('width', (100* seconds / duration) + '%');
-            $('.glyphicon-unchecked').css('left', (seconds / duration) * $('#seekbg')[0].clientWidth -15 + 'px');
-            $('#current').text(formatTime(seconds));
+        function moveToTime(percent) {
+            var per, sec;
+            if (percent == undefined) {     //video playing
+                sec = player[0].currentTime;
+                per = sec / duration;
+            } else {                        //user specified
+                per = percent > 1 ? 1 : percent < 0 ? 0 : percent;
+                sec = player[0].currentTime = per * duration;
+            }
+            $('#seek').css('width', 100 * per + '%');
+            $('.glyphicon-unchecked').css('left', per * $('#seekBg')[0].clientWidth -15 + 'px');
+            $('#current').text(formatTime(sec));
         }
         function scrollToText(id) {
+            if (id >= subTime.length) return;
             li_elements[cur_id].className = '';
-            cur_id = id;
-            li_elements[cur_id].className = 'activeText';
+            li_elements[cur_id = id].className = 'activeText';
             ul[0].scrollTop = li_elements[cur_id].offsetTop + li_elements[cur_id].clientHeight / 2 - offset;
         }
         var player = $('#videoPlayer'), subs = '<?= $video['subs'] ? $video['subs'] : 0?>',
             subs_html = '', subTime, cur_id = 0, li_elements, ul = $('#transcript'), offset = (ul[0].offsetTop + ul[0].clientHeight * 0.5) << 0,
-            duration, seeking;
+            duration, seeking, volDrag;
         setDuration();
         if (!duration) {
             player.on('loadeddata', function () {
@@ -159,11 +208,11 @@
         }
         player.on('timeupdate', function () {
             if (subs) {
-                if (subTime[cur_id] <= player[0].currentTime && cur_id < li_elements.length) {
+                if (subTime[cur_id] <= player[0].currentTime) {
                     scrollToText(cur_id + 1);
                 }
             }
-            moveToTime(player[0].currentTime);
+            moveToTime();
         });
         $('#transcript').click(function(e){
             var i = 0, el = e.target;
@@ -172,21 +221,49 @@
             }
             player[0].currentTime = i == 0 ? 0 : subTime[i-1];
         });
-        $('#seekbg').on('mousedown', function(e){
+        function setVolume(percent) {
+            var ico, per;
+            if (percent == 'mute') {     //mute & unmute
+                if (player[0].muted == false) {
+                    player[0].muted = true;
+                    per = 0;
+                } else {
+                    player[0].muted = false;
+                    per = player[0].volume;
+                    if (!per) per = player[0].volume = 1;
+                }
+            } else {                        //volume drag
+                player[0].muted = false;
+                per = percent > 1 ? 1 : percent < 0 ? 0 : percent;
+                player[0].volume = per;
+                if (!per) player[0].muted = true;
+            }
+            ico = per > 0.5 ? 'up' : per > 0 ? 'down' : 'off';
+            $('#volBar').css('width', 100 * per + '%');
+            $("#volume").children().attr('class', 'glyphicon glyphicon-volume-' + ico);
+        }
+        $('#volBarWrap').on('mousedown', function(e) {
+            e.preventDefault();
+            $('#volBarWrap').css('width', '100px');
+            volDrag = this.offsetLeft;
+            setVolume((e.clientX - volDrag) / 100);
+        });
+        $('#seekBg').on('mousedown', function(e) {
+            e.preventDefault();
             seeking = [this.clientWidth, this.offsetLeft];
-            var percent = (e.clientX - seeking[1]) / seeking[0];
-            percent = percent > 1 ? 1 : percent < 0 ? 0 : percent;
-            moveToTime(player[0].currentTime = duration * percent);
+            moveToTime((e.clientX - seeking[1]) / seeking[0]);
         });
         $('body').on('mousemove', function(e) {
             if (seeking) {
-                var percent = (e.clientX - seeking[1]) / seeking[0];
-                percent = percent > 1 ? 1 : percent < 0 ? 0 : percent;
-                moveToTime(player[0].currentTime = duration * percent);
+                moveToTime((e.clientX - seeking[1]) / seeking[0]);
+            } else if (volDrag) {
+                setVolume((e.clientX - volDrag) / 100);
             }
         });
         $('body').on('mouseup', function(e) {
             seeking = 0;
+            volDrag = 0;
+            $('#volBarWrap')[0].style.width = '';
         });
         $('#play').click(function () {
             if (player[0].paused) {
@@ -199,14 +276,8 @@
             }
             return false;
         });
-        $('.btnMute').click(function () {
-            if (player[0].muted == false) {
-                player[0].muted = true;
-                $('.glyphicon-volume-up').attr('class', 'glyphicon glyphicon-volume-off');
-            } else {
-                player[0].muted = false;
-                $('.glyphicon-volume-off').attr('class', 'glyphicon glyphicon-volume-up');
-            }
+        $('#volume').click(function () {
+            setVolume('mute');
         });
         $('.btnFullscreen').on('click', function () {
             player[0].webkitEnterFullscreen();
@@ -219,7 +290,7 @@
     <?php if ($video['linktype']) {//uploaded video ?>
         <div class="player">
             <div id="videoWrap">
-                <video id="videoPlayer" preload="" controls>
+                <video id="videoPlayer" preload="">
                     <source src="uploads/<?= $video['link'] ?>" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
@@ -227,17 +298,16 @@
             <ul id="transcript">
                 <li>TEST</li>
             </ul>
-            <div id="seekbg"><div id="seek"></div><div class="glyphicon glyphicon-unchecked"></div></div>
+            <div id="seekBg"><div id="seek"></div><div class="glyphicon glyphicon-unchecked"></div></div>
             <div class="videoControls">
                 <div id="play">
                     <span class="glyphicon glyphicon-play"></span>
                 </div>
-                <div id="speed">
-                    1.0x
-                </div>
+                <div id="speed">1.0x</div>
                 <div id="volume">
                     <span class="glyphicon glyphicon-volume-up"></span>
                 </div>
+                <div id="volBarWrap"><div id="volBarBg"><div id="volBar"></div></div></div>
                 <span class="time">
                     <span id="current" >0:00</span>
                     /
