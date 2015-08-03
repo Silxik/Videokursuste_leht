@@ -34,7 +34,7 @@
         float: left;
         width: 100%;
         height: 30px;
-        font-size: 22px;
+        font-size: 20px;
         background: #222;
         display: block;
     }
@@ -47,11 +47,12 @@
         color: #CCC;
     }
     .player .glyphicon {
-        margin-top: 2px;
+        margin-top: 3px;
         margin-left: 8px;
         margin-right: 8px;
     }
     #videoWrap {
+        position: relative;
         float: left;
         width: 75%;
         height: 100%;
@@ -112,6 +113,22 @@
         font-size: 18px;
         line-height: 30px;
     }
+    #subBox {
+        position: absolute;
+        background: #444;
+        color: #000;
+        text-align: center;
+        display: none;
+        right: 5px;
+        bottom: 5px;
+    }
+    #subBox textarea {
+        width: 200px;
+        height: 60px;
+    }
+    #subBox button {
+
+    }
     .glyphicon-unchecked {
         position: absolute;
         color: #AAA;
@@ -139,19 +156,22 @@
 </style>
 <script>
     init.push(function() {
+
+        //functions
+
         function getTranscript() {
-            $.post("uploads/" + subs, null, function (data) {
-                var srt = data.split('\r\n\r\n'), i = 0, l = srt.length, s;
-                subTime = Array(l);
+            $.post("uploads/" + subFile, null, function (data) {
+                var srt = data.split('\r\n\r\n'),       //splits to chunks by an empty row
+                    i = 0, l = srt.length, s, html = '';
                 for (; i < l; i++) {
-                    s = srt[i].split('\r\n');
-                    subs_html += '<li>' + s.slice(2, s.length).join('<br/>') + '</li>';
-                    s = s[1].split('-->')[1].replace(',', ".").split(':');
+                    s = srt[i].split('\r\n');       //splits chunks by newline
+                    html += '<li>' + s.slice(2, s.length).join('<br/>') + '</li>';  //appends lines after the 2nd
+                    s = s[1].split('-->')[1].replace(',', ".").split(':');      //grabs the ending times
                     subTime[i] = s[0] * 3600 + s[1] * 60 + 1 * s[2];
                 }
-                ul.html(subs_html);
-                li_elements = $('#transcript > li');
-                li_elements[0].className = 'activeText';
+                subWrap.html(html);
+                subParts = $('#transcript > li');
+                subParts[0].className = 'activeText';
             });
         }
         function formatTime(seconds) {
@@ -162,9 +182,14 @@
             s = s < 10 ? "0" + s : s;
             return h ? h + ':' + m + ':' + s : m ? m + ':' + s : s;
         }
-        function setDuration() {
+        function getDuration() {
             duration = Math.ceil(player[0].duration);
             $('#duration').text(formatTime(duration));
+            if (!duration) {    //if player metadata has not loaded, retry
+                player.on('loadeddata', function () {
+                    getDuration();
+                });
+            }
         }
         function moveToTime(percent) {
             var per, sec;
@@ -181,46 +206,10 @@
         }
         function scrollToText(id) {
             if (id >= subTime.length) return;
-            li_elements[cur_id].className = '';
-            li_elements[cur_id = id].className = 'activeText';
-            ul[0].scrollTop = li_elements[cur_id].offsetTop + li_elements[cur_id].clientHeight / 2 - offset;
+            subParts[subId].className = '';
+            subParts[subId = id].className = 'activeText';
+            subWrap[0].scrollTop = subParts[subId].offsetTop - subWrap[0].offsetTop + (subParts[subId].clientHeight - subWrap[0].clientHeight) / 2;
         }
-        var player = $('#videoPlayer'), subs = '<?= $video['subs'] ? $video['subs'] : 0?>',
-            subs_html = '', subTime, cur_id = 0, li_elements, ul = $('#transcript'), offset = (ul[0].offsetTop + ul[0].clientHeight * 0.5) << 0,
-            duration, seeking, volDrag;
-        setDuration();
-        if (!duration) {
-            player.on('loadeddata', function () {
-                setDuration();
-            });
-        }
-        if (subs) {
-            getTranscript();
-            player.on('seeking', function () {
-                var i = 0, t = player[0].currentTime;
-                for (; i < subTime.length; i++) {
-                    if (subTime[i] > t) {
-                        scrollToText(i);
-                        break;
-                    }
-                }
-            });
-        }
-        player.on('timeupdate', function () {
-            if (subs) {
-                if (subTime[cur_id] <= player[0].currentTime) {
-                    scrollToText(cur_id + 1);
-                }
-            }
-            moveToTime();
-        });
-        $('#transcript').click(function(e){
-            var i = 0, el = e.target;
-            while( (el = el.previousSibling) != null ) {
-                i++;
-            }
-            player[0].currentTime = i == 0 ? 0 : subTime[i-1];
-        });
         function setVolume(percent) {
             var ico, per;
             if (percent == 'mute') {     //mute & unmute
@@ -242,6 +231,47 @@
             $('#volBar').css('width', 100 * per + '%');
             $("#volume").children().attr('class', 'glyphicon glyphicon-volume-' + ico);
         }
+
+        //global variables
+
+        var player = $('#videoPlayer'),
+            subWrap = $('#transcript'),
+            subFile = '<?= $video['subs'] ? $video['subs'] : 0?>',
+            subTime = [],
+            subId = 0,
+            subParts, duration, seeking, volDrag;
+
+        //Initialization
+
+        getDuration();
+
+        if (subFile) {
+            getTranscript();
+            player.on('seeking', function () {
+                var i = 0, t = player[0].currentTime;
+                for (; i < subTime.length; i++) {
+                    if (subTime[i] > t) {
+                        scrollToText(i);
+                        break;
+                    }
+                }
+            });
+        }
+        player.on('timeupdate', function () {
+            if (subFile) {
+                if (subTime[subId] <= player[0].currentTime) {
+                    scrollToText(subId + 1);
+                }
+            }
+            moveToTime();
+        });
+        $('#transcript').click(function(e){
+            var i = 0, el = e.target;
+            while( (el = el.previousSibling) != null ) {
+                i++;
+            }
+            player[0].currentTime = i == 0 ? 0 : subTime[i-1];
+        });
         $('#volBarWrap').on('mousedown', function(e) {
             e.preventDefault();
             $('#volBarWrap').css('width', '100px');
@@ -279,17 +309,51 @@
         $('#volume').click(function () {
             setVolume('mute');
         });
-        $('.btnFullscreen').on('click', function () {
-            player[0].webkitEnterFullscreen();
+        $('#fullScr').on('click', function () {
+            //player[0].webkitEnterFullscreen();
             player[0].mozRequestFullScreen();
             return false;
         });
+        /*
+        $('#addSub').on('click', function () {
+            $('#subBox').css('display', 'block');
+        });
+        $('#closeSub').on('click', function () {
+            $('#subBox').css('display', 'none');
+        });
+        $('#addLine').on('click', function () {
+            /*
+             $.post("uploads/" + subFile, null, function (data) {
+             var srt = data.split('\r\n\r\n'),       //splits to chunks by an empty row
+             i = 0, l = srt.length, s, html = '';
+             for (; i < l; i++) {
+             s = srt[i].split('\r\n');       //splits chunks by newline
+             html += '<li>' + s.slice(2, s.length).join('<br/>') + '</li>';  //appends lines after the 2nd
+             s = s[1].split('-->')[1].replace(',', ".").split(':');      //grabs the ending times
+             subTime[i] = s[0] * 3600 + s[1] * 60 + 1 * s[2];
+             }
+             subWrap.html(html);
+             subParts = $('#transcript > li');
+             subParts[0].className = 'activeText';
+             });
+
+        });
+        */
     });
 </script>
 <div class="container">
     <?php if ($video['linktype']) {//uploaded video ?>
         <div class="player">
             <div id="videoWrap">
+
+                <div id="subBox">
+                    <textarea id="subArea"></textarea><br/>
+                    <div class="btn-group">
+                        <button id="addLine" class="btn btn-default">Lisa</button>
+                        <button id="closeSub" class="btn btn-default">Sulge</button>
+                    </div>
+                </div>
+
                 <video id="videoPlayer" preload="">
                     <source src="uploads/<?= $video['link'] ?>" type="video/mp4">
                     Your browser does not support the video tag.
@@ -298,26 +362,29 @@
             <ul id="transcript">
                 <li>TEST</li>
             </ul>
-            <div id="seekBg"><div id="seek"></div><div class="glyphicon glyphicon-unchecked"></div></div>
+            <div id="seekBg">
+                <div id="seek"></div>
+                <div class="glyphicon glyphicon-unchecked">
+                </div>
+            </div>
             <div class="videoControls">
                 <div id="play">
                     <span class="glyphicon glyphicon-play"></span>
                 </div>
-                <div id="speed">1.0x</div>
-                <div id="volume">
-                    <span class="glyphicon glyphicon-volume-up"></span>
-                </div>
-                <div id="volBarWrap"><div id="volBarBg"><div id="volBar"></div></div></div>
-                <span class="time">
-                    <span id="current" >0:00</span>
-                    /
-                    <span id="duration">0:00</span>
-                </span>
-                <div id="fullScr">
-                    <span class="glyphicon glyphicon-fullscreen"></span>
-                </div>
-                <div id="addSub"><span class="glyphicon glyphicon-pencil"></span></div>
-
+                <!-- <div id="speed">1.0x</div> -->
+               <div id="volume">
+                   <span class="glyphicon glyphicon-volume-up"></span>
+               </div>
+               <div id="volBarWrap"><div id="volBarBg"><div id="volBar"></div></div></div>
+               <span class="time">
+                   <span id="current" >0:00</span>
+                   /
+                   <span id="duration">0:00</span>
+               </span>
+               <div id="fullScr">
+                   <span class="glyphicon glyphicon-fullscreen"></span>
+               </div>
+               <!-- <div id="addSub"><span class="glyphicon glyphicon-pencil"></span></div> -->
             </div>
         </div>
 
