@@ -26,7 +26,7 @@
             </tr>
             <tr>
                 <th>Kirjeldus</th>
-                <td><textarea class="form-control" id="desc" name="data[desc]" rows="7"><?= $video['desc'] ?></textarea>
+                <td><textarea class="form-control" id="desc" name="data[video_desc]" rows="7"><?= $video['video_desc'] ?></textarea>
                 </td>
             </tr>
             <tr>

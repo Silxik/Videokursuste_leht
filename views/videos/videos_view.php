@@ -5,24 +5,36 @@
     }
     #transcript {
         background: #CCC;
-        width: 20%;
+        width: 25%;
         float: left;
         height: 100%;
         margin: 0px;
         padding: 0px;
         list-style-type: none;
         overflow-y: scroll;
+        padding: 10px;
     }
+    #transcript li {
+        cursor: pointer;
+    }
+    #transcript li:hover {
+        color: #000;
+        text-decoration: underline;
+     }
     .player {
         height: 360px;
         background: #444;
         min-width: 500px;
     }
     .videoControls {
+        -webkit-user-select:none;
+        -moz-user-select: none;
+        -ms-user-select: none;
+        user-select: none;
         float: left;
         width: 100%;
         height: 30px;
-        font-size: 22px;
+        font-size: 20px;
         background: #222;
         display: block;
     }
@@ -35,13 +47,14 @@
         color: #CCC;
     }
     .player .glyphicon {
-        margin-top: 2px;
+        margin-top: 3px;
         margin-left: 8px;
         margin-right: 8px;
     }
     #videoWrap {
+        position: relative;
         float: left;
-        width: 80%;
+        width: 75%;
         height: 100%;
     }
     #videoPlayer {
@@ -49,17 +62,13 @@
         width: 100%;
         height: 100%;
     }
-    #play, #volume, #current, #seekbg {
+    #play, #volume, #seekBg, #speed, #volBarWrap {
         float: left;
     }
-    #fullScr, #duration {
+    #fullScr, #addSub {
         float: right;
     }
-    #duration, #current {
-        color: #FFF;
-        font-size: 14px;
-    }
-    #seekbg {
+    #seekBg {
         position: relative;
         background: #555;
         height: 10px;
@@ -71,84 +80,220 @@
         height: 10px;
         width: 0%;
     }
+    #volBarWrap {
+        width: 0px;
+        -webkit-transition: width 0.6s ease-in;
+        -moz-transition: width 0.6s ease-in;
+        -ms-transition: width 0.6s ease-in;
+        -o-transition: width 0.6s ease-in;
+        transition: width 0.6s ease-in;
+        line-height: 30px;
+    }
+    #volBar {
+        background: #F00;
+        width: 100%;
+        height: 8px;
+    }
+    #volBarBg {
+        background: #555;
+        width: 100%;
+        height: 8px;
+        margin-top: 11px;
+    }
+    #volume:hover + #volBarWrap, #volBarWrap:hover{
+        color: #00F;
+        width: 100px;
+        -webkit-transition: width 0.2s;
+        -moz-transition: width 0.2s;
+        -ms-transition: width 0.2s;
+        -o-transition: width 0.2s;
+        transition: width 0.2s;
+    }
+    #speed {
+        font-size: 18px;
+        line-height: 30px;
+    }
+    #subBox {
+        position: absolute;
+        background: #444;
+        color: #000;
+        text-align: center;
+        display: none;
+        right: 5px;
+        bottom: 5px;
+    }
+    #subBox textarea {
+        width: 200px;
+        height: 60px;
+    }
+    #subBox button {
+
+    }
     .glyphicon-unchecked {
         position: absolute;
         color: #AAA;
         top: -5px;
-        left: -10px;
+        left: -15px;
+        opacity: 0;
+        -webkit-transition: opacity 0.2s;
+        -moz-transition: opacity 0.2s;
+        -ms-transition: opacity 0.2s;
+        -o-transition: opacity 0.2s;
+        transition: opacity 0.2s;
     }
-    .glyphicon-unchecked:hover {
+    #seekBg:hover .glyphicon-unchecked {
         color: #FFF;
+        opacity: 1;
+    }
+    .time {
+        display: block;
+        float: left;
+        color: #FFF;
+        font-size: 14px;
+        line-height: 30px;
+        margin-left: 5px;
     }
 </style>
 <script>
     init.push(function() {
+
+        //functions
+
         function getTranscript() {
-            $.post("uploads/" + subs, null, function (data) {
-                var srt = data.split('\r\n\r\n'), i = 0, l = srt.length, s;
-                time = Array(l);
+            $.post("uploads/" + subFile, null, function (data) {
+                var srt = data.split('\r\n\r\n'),       //splits to chunks by an empty row
+                    i = 0, l = srt.length, s, html = '';
                 for (; i < l; i++) {
-                    s = srt[i].split('\r\n');
-                    html += '<li>' + s.slice(2, s.length).join('<br/>') + '</li>';
-                    s = s[1].split('-->')[1].replace(',', ".").split(':');
-                    time[i] = s[0] * 3600 + s[1] * 60 + 1 * s[2];
+                    s = srt[i].split('\r\n');       //splits chunks by newline
+                    html += '<li>' + s.slice(2, s.length).join('<br/>') + '</li>';  //appends lines after the 2nd
+                    s = s[1].split('-->')[1].replace(',', ".").split(':');      //grabs the ending times
+                    subTime[i] = s[0] * 3600 + s[1] * 60 + 1 * s[2];
                 }
-                ul.html(html);
-                lis = $('#transcript > li');
-                lis[0].className = 'activeText';
+                subWrap.html(html);
+                subParts = $('#transcript > li');
+                subParts[0].className = 'activeText';
             });
         }
-        function setDuration() {
+        function formatTime(seconds) {
+            var h = seconds / 3600 << 0,
+                m = (seconds - h * 3600) / 60 << 0,
+                s =  seconds - (h * 3600) - (m * 60) << 0;
+            m = m ? m : '0';
+            s = s < 10 ? "0" + s : s;
+            return h ? h + ':' + m + ':' + s : m ? m + ':' + s : s;
+        }
+        function getDuration() {
             duration = Math.ceil(player[0].duration);
-            $('#duration').text(duration);
+            $('#duration').text(formatTime(duration));
+            if (!duration) {    //if player metadata has not loaded, retry
+                player.on('loadeddata', function () {
+                    getDuration();
+                });
+            }
         }
-        var player = $('#videoPlayer'), subs = '<?= $video['subs'] ? $video['subs'] : 0?>',
-            html = '', time, cur_id = 0, lis, ul = $('#transcript'), offset = (ul[0].offsetTop + ul[0].clientHeight * 0.5) << 0,
-            duration;
-        setDuration();
-        if (!duration) {
-            player.on('loadeddata', function () {
-                setDuration();
-            });
+        function moveToTime(percent) {
+            var per, sec;
+            if (percent == undefined) {     //video playing
+                sec = player[0].currentTime;
+                per = sec / duration;
+            } else {                        //user specified
+                per = percent > 1 ? 1 : percent < 0 ? 0 : percent;
+                sec = player[0].currentTime = per * duration;
+            }
+            $('#seek').css('width', 100 * per + '%');
+            $('.glyphicon-unchecked').css('left', per * $('#seekBg')[0].clientWidth -15 + 'px');
+            $('#current').text(formatTime(sec));
+        }
+        function scrollToText(id) {
+            if (id >= subTime.length) return;
+            subParts[subId].className = '';
+            subParts[subId = id].className = 'activeText';
+            subWrap[0].scrollTop = subParts[subId].offsetTop - subWrap[0].offsetTop + (subParts[subId].clientHeight - subWrap[0].clientHeight) / 2;
+        }
+        function setVolume(percent) {
+            var ico, per;
+            if (percent == 'mute') {     //mute & unmute
+                if (player[0].muted == false) {
+                    player[0].muted = true;
+                    per = 0;
+                } else {
+                    player[0].muted = false;
+                    per = player[0].volume;
+                    if (!per) per = player[0].volume = 1;
+                }
+            } else {                        //volume drag
+                player[0].muted = false;
+                per = percent > 1 ? 1 : percent < 0 ? 0 : percent;
+                player[0].volume = per;
+                if (!per) player[0].muted = true;
+            }
+            ico = per > 0.5 ? 'up' : per > 0 ? 'down' : 'off';
+            $('#volBar').css('width', 100 * per + '%');
+            $("#volume").children().attr('class', 'glyphicon glyphicon-volume-' + ico);
         }
 
-        if (subs) {
+        //global variables
+
+        var player = $('#videoPlayer'),
+            subWrap = $('#transcript'),
+            subFile = '<?= $video['subs'] ? $video['subs'] : 0?>',
+            subTime = [],
+            subId = 0,
+            subParts, duration, seeking, volDrag;
+
+        //Initialization
+
+        getDuration();
+
+        if (subFile) {
             getTranscript();
             player.on('seeking', function () {
                 var i = 0, t = player[0].currentTime;
-                for (; i < time.length; i++) {
-                    if (time[i] > t) {
-                        lis[cur_id].className = '';
-                        cur_id = i;
-                        lis[cur_id].className = 'activeText';
-                        ul[0].scrollTop = lis[cur_id].offsetTop + lis[cur_id].clientHeight / 2 - offset;
+                for (; i < subTime.length; i++) {
+                    if (subTime[i] > t) {
+                        scrollToText(i);
                         break;
                     }
                 }
             });
         }
         player.on('timeupdate', function () {
-            if (subs) {
-                if (time[cur_id] <= player[0].currentTime) {
-                    lis[cur_id].className = '';
-                    cur_id ++;
-                    lis[cur_id].className = 'activeText';
-                    ul[0].scrollTop = lis[cur_id].offsetTop + lis[cur_id].clientHeight / 2 - offset;
+            if (subFile) {
+                if (subTime[subId] <= player[0].currentTime) {
+                    scrollToText(subId + 1);
                 }
             }
-            $('#seek').css('width', (100* player[0].currentTime / duration) + '%');
-            $('#current').text(Math.round(player[0].currentTime));
+            moveToTime();
         });
         $('#transcript').click(function(e){
             var i = 0, el = e.target;
             while( (el = el.previousSibling) != null ) {
                 i++;
             }
-            player[0].currentTime = i == 0 ? 0 : time[i-1];
+            player[0].currentTime = i == 0 ? 0 : subTime[i-1];
         });
-        $('#seekbg').on('mousedown', function(e){//TODO: video scrollbar
-            //console.log(100* player[0].currentTime / duration);
-            //player[0].currentTime =
+        $('#volBarWrap').on('mousedown', function(e) {
+            e.preventDefault();
+            $('#volBarWrap').css('width', '100px');
+            volDrag = this.offsetLeft;
+            setVolume((e.clientX - volDrag) / 100);
+        });
+        $('#seekBg').on('mousedown', function(e) {
+            e.preventDefault();
+            seeking = [this.clientWidth, this.offsetLeft];
+            moveToTime((e.clientX - seeking[1]) / seeking[0]);
+        });
+        $('body').on('mousemove', function(e) {
+            if (seeking) {
+                moveToTime((e.clientX - seeking[1]) / seeking[0]);
+            } else if (volDrag) {
+                setVolume((e.clientX - volDrag) / 100);
+            }
+        });
+        $('body').on('mouseup', function(e) {
+            seeking = 0;
+            volDrag = 0;
+            $('#volBarWrap')[0].style.width = '';
         });
         $('#play').click(function () {
             if (player[0].paused) {
@@ -161,27 +306,55 @@
             }
             return false;
         });
-        $('.btnMute').click(function () {
-            if (player[0].muted == false) {
-                player[0].muted = true;
-                $('.glyphicon-volume-up').attr('class', 'glyphicon glyphicon-volume-off');
-            } else {
-                player[0].muted = false;
-                $('.glyphicon-volume-off').attr('class', 'glyphicon glyphicon-volume-up');
-            }
+        $('#volume').click(function () {
+            setVolume('mute');
         });
-        $('.btnFullscreen').on('click', function () {
-            player[0].webkitEnterFullscreen();
+        $('#fullScr').on('click', function () {
+            //player[0].webkitEnterFullscreen();
             player[0].mozRequestFullScreen();
             return false;
         });
+        /*
+        $('#addSub').on('click', function () {
+            $('#subBox').css('display', 'block');
+        });
+        $('#closeSub').on('click', function () {
+            $('#subBox').css('display', 'none');
+        });
+        $('#addLine').on('click', function () {
+            /*
+             $.post("uploads/" + subFile, null, function (data) {
+             var srt = data.split('\r\n\r\n'),       //splits to chunks by an empty row
+             i = 0, l = srt.length, s, html = '';
+             for (; i < l; i++) {
+             s = srt[i].split('\r\n');       //splits chunks by newline
+             html += '<li>' + s.slice(2, s.length).join('<br/>') + '</li>';  //appends lines after the 2nd
+             s = s[1].split('-->')[1].replace(',', ".").split(':');      //grabs the ending times
+             subTime[i] = s[0] * 3600 + s[1] * 60 + 1 * s[2];
+             }
+             subWrap.html(html);
+             subParts = $('#transcript > li');
+             subParts[0].className = 'activeText';
+             });
+
+        });
+        */
     });
 </script>
 <div class="container">
     <?php if ($video['linktype']) {//uploaded video ?>
         <div class="player">
             <div id="videoWrap">
-                <video id="videoPlayer" preload="" controls>
+
+                <div id="subBox">
+                    <textarea id="subArea"></textarea><br/>
+                    <div class="btn-group">
+                        <button id="addLine" class="btn btn-default">Lisa</button>
+                        <button id="closeSub" class="btn btn-default">Sulge</button>
+                    </div>
+                </div>
+
+                <video id="videoPlayer" preload="">
                     <source src="uploads/<?= $video['link'] ?>" type="video/mp4">
                     Your browser does not support the video tag.
                 </video>
@@ -189,19 +362,29 @@
             <ul id="transcript">
                 <li>TEST</li>
             </ul>
-            <div id="seekbg"><div class="glyphicon glyphicon-unchecked"></div><div id="seek"></div></div>
+            <div id="seekBg">
+                <div id="seek"></div>
+                <div class="glyphicon glyphicon-unchecked">
+                </div>
+            </div>
             <div class="videoControls">
                 <div id="play">
                     <span class="glyphicon glyphicon-play"></span>
                 </div>
-                <div id="volume">
-                    <span class="glyphicon glyphicon-volume-up"></span>
-                </div>
-                <span id="current" >0:00</span>
-                <div id="fullScr">
-                    <span class="glyphicon glyphicon-fullscreen"></span>
-                </div>
-                <span id="duration">0:00</span>
+                <!-- <div id="speed">1.0x</div> -->
+               <div id="volume">
+                   <span class="glyphicon glyphicon-volume-up"></span>
+               </div>
+               <div id="volBarWrap"><div id="volBarBg"><div id="volBar"></div></div></div>
+               <span class="time">
+                   <span id="current" >0:00</span>
+                   /
+                   <span id="duration">0:00</span>
+               </span>
+               <div id="fullScr">
+                   <span class="glyphicon glyphicon-fullscreen"></span>
+               </div>
+               <!-- <div id="addSub"><span class="glyphicon glyphicon-pencil"></span></div> -->
             </div>
         </div>
 
@@ -211,10 +394,11 @@
                 allowfullscreen></iframe>
     <?php } ?>
 </div>
+
 <div class="container">
     <div class="row">
         <h2><?= $video['title'] ?></h2>
-        <p><?= $video['desc'] ?></p>
+        <p><?= $video['video_desc'] ?></p>
         <? foreach ($tags as $tag): ?>
             <a href="tags/view/<?= $tag['tag_id'] ?>"><span class="label label-info"><?= $tag['tag_name'] ?></span></a>
         <? endforeach ?>
