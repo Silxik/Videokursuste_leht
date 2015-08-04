@@ -4,6 +4,7 @@
         height: 200px;
         border-width: 2px;
         margin-bottom: 20px;
+        margin-top: 15px;
     }
 
     /* skin.css Style*/
@@ -40,6 +41,10 @@
 
     #course-new {
         display: none;
+    }
+
+    .form-group {
+        margin-top: 15px;
     }
 </style>
 <h1>Tere tulemast!</h1>

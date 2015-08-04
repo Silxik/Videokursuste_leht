@@ -153,6 +153,41 @@
         line-height: 30px;
         margin-left: 5px;
     }
+
+
+    #speed ul li {
+        list-style-type: none;
+    }
+
+    #speed ul {
+        padding: 0;
+    }
+
+    #speed li {
+        position: relative;
+        width: 100%;
+    }
+
+    #speed li ul {
+        position: absolute;
+        display: none;
+    }
+
+    #speed li:hover ul {
+        bottom:18px;
+        display:block;
+        background:#222;
+        margin-bottom: 12px;
+        padding: 0 20px;
+        font-size: 13px;
+        margin-left: -10px;
+        color: #aaa;
+        opacity: 0.7;
+    }
+
+    #speed li ul li:hover {
+        color: #ccc;
+    }
 </style>
 <script>
     init.push(function() {
@@ -371,14 +406,25 @@
                 <div id="play">
                     <span class="glyphicon glyphicon-play"></span>
                 </div>
-                <!-- <div id="speed">1.0x</div> -->
+                <div id="speed">
+                    <ul>
+                        <li>Kiirus
+                            <ul>
+                                <li>2.0x</li>
+                                <li>1.5x</li>
+                                <li>1.0x</li>
+                                <li>0.5x</li>
+                            </ul>
+                        </li>
+                    </ul>
+                </div>
                <div id="volume">
                    <span class="glyphicon glyphicon-volume-up"></span>
                </div>
                <div id="volBarWrap"><div id="volBarBg"><div id="volBar"></div></div></div>
                <span class="time">
-                   <span id="current" >0:00</span>
-                   /
+                       <span id="current" >0:00</span>
+                       /
                    <span id="duration">0:00</span>
                </span>
                <div id="fullScr">
