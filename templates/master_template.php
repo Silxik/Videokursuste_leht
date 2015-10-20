@@ -30,7 +30,8 @@ $page = $this->controller;
         }
 
         .navbar-menu {
-            padding-top: 7px;
+            margin-top: 7px;
+            margin-left: 30px;
         }
 
         .searchbox {
@@ -97,6 +98,12 @@ $page = $this->controller;
         .byline a {
             text-decoration: none;
         }
+
+        .active {
+            font-weight: bold;
+        }
+
+
     </style>
     <script>
         var init = [];
@@ -129,7 +136,7 @@ $page = $this->controller;
                 }
             });
         });
-        function buttonUp(){
+        /*function buttonUp(){
             var inputVal = $('.searchbox-input').val();
             inputVal = $.trim(inputVal).length;
             if( inputVal !== 0){
@@ -138,6 +145,11 @@ $page = $this->controller;
                 $('.searchbox-input').val('');
                 $('.searchbox-icon').css('display','block');
             }
+        }*/
+        function searchq(str) {
+            $.post("videos", {searchTxt: str},function (data) {
+                $('#output').html(data);
+                });
         }
     </script>
     <!-- HTML5 shim and Respond.js IE8 support of HTML5 elements and media queries -->
@@ -159,7 +171,7 @@ $page = $this->controller;
                 <span class="icon-bar"></span>
                 <span class="icon-bar"></span>
             </button>
-            <a class="navbar-brand" href="#"><?= PROJECT_NAME ?></a>
+            <a class="navbar-brand" href="""><?= PROJECT_NAME ?></a>
         </div>
         <div class="navbar-collapse collapse">
             <ul class="nav navbar-nav navbar-menu">
@@ -182,7 +194,7 @@ $page = $this->controller;
                 <?php } else {
                     $names=get_first("SELECT username, person_firstname FROM person WHERE person_id=".$_SESSION['person_id']);
                     $name=$names['person_firstname']==""?$names['username']:$names['person_firstname'];
-                    echo '<li><a href="user">'.$name.'</a></li>';
+                    echo '<li style="margin-top: 7px";><a href="user">'.$name.'</a></li>';
                     ?>
                     <li>
                         <a href="logout"><button class="btn btn-primary">
@@ -195,10 +207,11 @@ $page = $this->controller;
             </ul>
             <ul class="nav navbar-nav navbar-right">
                 <form class="searchbox">
-                    <input type="search" placeholder="Otsi..." name="search" class="searchbox-input" onkeyup="buttonUp();" required>
+                    <input type="search" placeholder="Otsi..." name="search" class="searchbox-input" onkeyup="searchq(this.value)" required>
                     <!-- <input type="submit" class="searchbox-submit" value="GO"> -->
                     <span class="glyphicon glyphicon-search searchbox-icon"></span>
                 </form>
+                <ul id="output"></ul>
             </ul>
         </div>
         <!--/.nav-collapse -->

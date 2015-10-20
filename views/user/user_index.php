@@ -4,6 +4,7 @@
         height: 200px;
         border-width: 2px;
         margin-bottom: 20px;
+        margin-top: 15px;
     }
 
     /* skin.css Style*/
@@ -40,6 +41,10 @@
 
     #course-new {
         display: none;
+    }
+
+    .form-group {
+        margin-top: 15px;
     }
 </style>
 <h1>Tere tulemast!</h1>
@@ -101,7 +106,7 @@
                                     <label class="col-md-3 control-label" for="desc">Kirjeldus</label>
 
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="desc" name="data[desc]"
+                                        <textarea class="form-control" id="desc" name="data[video_desc]"
                                                   placeholder="Kirjeldus" rows="5"></textarea>
                                     </div>
                                 </div>

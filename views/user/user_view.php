@@ -16,7 +16,7 @@
     </tr>
     <tr>
         <th>Kirjeldus</th>
-        <td><?= $video['desc'] ?></td>
+        <td><?= $video['video_desc'] ?></td>
     </tr>
     <tr>
         <th>Avalik</th>
