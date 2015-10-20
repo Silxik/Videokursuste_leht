@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 4.5.0-dev
+-- version 4.3.11
 -- http://www.phpmyadmin.net
 --
--- Host: localhost
--- Generation Time: Jul 27, 2015 at 12:11 PM
--- Server version: 5.6.19-0ubuntu0.14.04.1
--- PHP Version: 5.5.9-1ubuntu4.11
+-- Host: 127.0.0.1
+-- Generation Time: Aug 03, 2015 at 09:32 AM
+-- Server version: 5.6.24
+-- PHP Version: 5.6.8
 
 SET FOREIGN_KEY_CHECKS=0;
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
@@ -136,17 +136,23 @@ CREATE TABLE IF NOT EXISTS `video` (
   `person_id` int(10) unsigned NOT NULL,
   `public` tinyint(1) NOT NULL DEFAULT '1',
   `linktype` tinyint(4) NOT NULL DEFAULT '0',
-  `course_id` int(10) unsigned NOT NULL
+  `course_id` INT(10) UNSIGNED NOT NULL,
+  `subs`      VARCHAR(8)       NOT NULL
 ) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
 
 --
 -- Dumping data for table `video`
 --
 
-INSERT INTO `video` (`video_id`, `title`, `video_desc`, `link`, `date_added`, `person_id`, `public`, `linktype`, `course_id`) VALUES
-  (1, 'Learn PHP in 15 minutes', 'PHP is one of the most useful languages to know and is used everywhere you look online. In this tutorial, I start from the beginning and show you how to start writing PHP scripts.\r\n\r\nThe video covers the software you need to get started, data types, outpu', 'ZdP0KM49IVk', '2015-07-15 14:38:51', 1, 1, 0, 2),
-  (3, 'PHP Programming', 'Get the Cheat Sheet Here : http://goo.gl/aQbQ4F\r\n\r\nLearn HTML in 15 Minutes : http://goo.gl/UoSoVm\r\n\r\nBest PHP book : http://goo.gl/wNMdWf\r\n\r\nIn this video tutorial I''ll teach pretty much the whole PHP programming language in one video. I have received th', '7TF00hJI78Y', '2015-07-15 14:40:41', 1, 1, 0, 2),
-  (5, 'Tutorial 1 - Introduction to PHP', 'Introduction to php', '4.mp4', '2015-07-17 11:46:15', 1, 1, 1, 1);
+INSERT INTO `video` (`video_id`, `title`, `video_desc`, `link`, `date_added`, `person_id`, `public`, `linktype`, `course_id`, `subs`)
+VALUES
+  (1, 'Learn PHP in 15 minutes',
+   'PHP is one of the most useful languages to know and is used everywhere you look online. In this tutorial, I start from the beginning and show you how to start writing PHP scripts.\r\n\r\nThe video covers the software you need to get started, data types, outpu',
+   'ZdP0KM49IVk', '2015-07-15 14:38:51', 1, 1, 0, 2, ''),
+  (3, 'PHP Programming',
+   'Get the Cheat Sheet Here : http://goo.gl/aQbQ4F\r\n\r\nLearn HTML in 15 Minutes : http://goo.gl/UoSoVm\r\n\r\nBest PHP book : http://goo.gl/wNMdWf\r\n\r\nIn this video tutorial I''ll teach pretty much the whole PHP programming language in one video. I have received th',
+   '7TF00hJI78Y', '2015-07-15 14:40:41', 1, 1, 0, 2, ''),
+  (5, 'Tutorial 1 - Introduction to PHP', 'Introduction to php', '4.mp4', '2015-07-17 11:46:15', 1, 1, 1, 1, '4.srt');
 
 -- --------------------------------------------------------
 
@@ -184,23 +190,19 @@ INSERT INTO `video_tags` (`video_id`, `tag_id`) VALUES
 -- Indexes for table `comment`
 --
 ALTER TABLE `comment`
-ADD PRIMARY KEY (`comment_id`),
-ADD KEY `video_id` (`video_id`),
-ADD KEY `user_id` (`person_id`);
+ADD PRIMARY KEY (`comment_id`), ADD KEY `video_id` (`video_id`), ADD KEY `user_id` (`person_id`);
 
 --
 -- Indexes for table `course`
 --
 ALTER TABLE `course`
-ADD PRIMARY KEY (`course_id`),
-ADD KEY `person_id` (`person_id`);
+ADD PRIMARY KEY (`course_id`), ADD KEY `person_id` (`person_id`);
 
 --
 -- Indexes for table `person`
 --
 ALTER TABLE `person`
-ADD PRIMARY KEY (`person_id`),
-ADD UNIQUE KEY `UNIQUE` (`username`);
+ADD PRIMARY KEY (`person_id`), ADD UNIQUE KEY `UNIQUE` (`username`);
 
 --
 -- Indexes for table `tag`
@@ -212,16 +214,13 @@ ADD PRIMARY KEY (`tag_id`);
 -- Indexes for table `video`
 --
 ALTER TABLE `video`
-ADD PRIMARY KEY (`video_id`),
-ADD KEY `person_id` (`person_id`),
-ADD KEY `course_id` (`course_id`);
+ADD PRIMARY KEY (`video_id`), ADD KEY `person_id` (`person_id`), ADD KEY `course_id` (`course_id`);
 
 --
 -- Indexes for table `video_tags`
 --
 ALTER TABLE `video_tags`
-ADD PRIMARY KEY (`video_id`,`tag_id`),
-ADD KEY `tag_id` (`tag_id`);
+ADD PRIMARY KEY (`video_id`, `tag_id`), ADD KEY `tag_id` (`tag_id`);
 
 --
 -- AUTO_INCREMENT for dumped tables

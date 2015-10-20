@@ -4,6 +4,9 @@
         padding: 0 100px 0 100px;
     }
 
+    .row {
+        padding-bottom: 50px;
+    }
 </style>
 
 <div class="container">

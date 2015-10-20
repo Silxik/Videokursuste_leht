@@ -30,7 +30,8 @@ $page = $this->controller;
         }
 
         .navbar-menu {
-            padding-top: 7px;
+            margin-top: 7px;
+            margin-left: 30px;
         }
 
         .searchbox {
@@ -97,6 +98,12 @@ $page = $this->controller;
         .byline a {
             text-decoration: none;
         }
+
+        .active {
+            font-weight: bold;
+        }
+
+
     </style>
     <script>
         var init = [];
@@ -187,7 +194,7 @@ $page = $this->controller;
                 <?php } else {
                     $names=get_first("SELECT username, person_firstname FROM person WHERE person_id=".$_SESSION['person_id']);
                     $name=$names['person_firstname']==""?$names['username']:$names['person_firstname'];
-                    echo '<li><a href="user">'.$name.'</a></li>';
+                    echo '<li style="margin-top: 7px";><a href="user">'.$name.'</a></li>';
                     ?>
                     <li>
                         <a href="logout"><button class="btn btn-primary">
