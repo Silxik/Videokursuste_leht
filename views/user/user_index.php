@@ -106,7 +106,7 @@
                                     <label class="col-md-3 control-label" for="desc">Kirjeldus</label>
 
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="desc" name="data[desc]"
+                                        <textarea class="form-control" id="desc" name="data[video_desc]"
                                                   placeholder="Kirjeldus" rows="5"></textarea>
                                     </div>
                                 </div>
