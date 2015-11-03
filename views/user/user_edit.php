@@ -26,7 +26,8 @@
             </tr>
             <tr>
                 <th>Kirjeldus</th>
-                <td><textarea class="form-control" id="desc" name="data[video_desc]" rows="7"><?= $video['video_desc'] ?></textarea>
+                <td><textarea class="form-control" id="desc" name="data[video_desc]"
+                              rows="7"><?= $video['video_desc'] ?></textarea>
                 </td>
             </tr>
             <tr>
@@ -58,7 +59,7 @@
             <tr>
                 <th>Subtiitrid</th>
                 <td>
-                    <span id="sub-file"><?= ($s = $video['subs']) ? "<a href='uploads/$s'>$s</a>" : 'Puuduvad'?></span>
+                    <span id="sub-file"><?= ($s = $video['subs']) ? "<a href='uploads/$s'>$s</a>" : 'Puuduvad' ?></span>
                     <!-- sets the filesize limit to 40MB -->
                     <input type="hidden" id="MAX_FILE_SIZE" name="MAX_FILE_SIZE" value="40000000"/>
                     <input type="file" id="file-input" name="upload" accept=".srt"/>
@@ -71,42 +72,34 @@
     </form>
 </div>
 
-<!-- BUTTONS -->
 <div class="pull-right">
-
-    <!-- CANCEL -->
     <button class="btn btn-default" onclick="window.location.href='user/view/<?= $video['video_id'] ?>'">
         Tühista
     </button>
-
-    <!-- DELETE -->
-    <button class="btn btn-danger" onclick="delete_video(<?= $video['video_id'] ?>)">Kustuta video</button>
-
-    <!-- SAVE -->
+    <button class="btn btn-danger" onclick="delete_video(<?= $video['video_id'] ?>)">
+        Kustuta video
+    </button>
     <button class="btn btn-primary" onclick="$('#form').submit()">
         Salvesta
     </button>
-
 </div>
-<!-- END BUTTONS -->
 
 <script>
-
-function delete_video(video_id) {
-    $.post("user/delete", {video_id: <?=$video['video_id']?>}, function (data) {
-        if (data == '1') {
-            window.location.href = 'user';
-        } else {
-            console.log(data);
-        }
-    });
-}
-window.onload = function() {
-    var fileinput = $('#file-input');
-    fileinput.on('change', function (e) {
-        //e.preventDefault();
-        var file = this.files[0];
-        $('#sub-file')[0].innerHTML = file.name;
-    });
-}
+    function delete_video(video_id) {
+        $.post("user/delete", {video_id: <?=$video['video_id']?>}, function (data) {
+            if (data == 'Ok') {
+                window.location.href = 'user';
+            } else {
+                console.log(data);
+            }
+        });
+    }
+    window.onload = function () {
+        var fileinput = $('#file-input');
+        fileinput.on('change', function (e) {
+            //e.preventDefault();
+            var file = this.files[0];
+            $('#sub-file')[0].innerHTML = file.name;
+        });
+    }
 </script>

@@ -36,9 +36,12 @@
 <script>
 function delete_course() {
     if (confirm("Oled kindel et soovid kursust kustutada?")) {
-        $.post("user/course", {id: <?=$course['course_id']?>}, function (r) {
-            console.log(r);
-            //window.location.href = 'user';
+        $.post("user/course", {id: <?=$course['course_id']?>}, function (response) {
+            if (response == 'Ok') {
+                window.location.href = 'user';
+            } else {
+                console.log(response);
+            }
         });
     }
 }

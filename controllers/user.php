@@ -46,6 +46,7 @@ class user extends Controller
             update('video', ['course_id' => '1'], "person_id = " . $_SESSION['person_id'] . " AND course_id = " . $_POST['id']);
             q("DELETE FROM course WHERE person_id = " . $_SESSION['person_id'] . " AND course_id = " . $_POST['id']);
         }
+        exit("Ok");
     }
 
     function index_post()
@@ -55,14 +56,14 @@ class user extends Controller
             $data = $_POST['data'];
             $tags = $_POST['tags'];
             $course = $_POST['course'];
-            //Course has been selected
+            // Course has been selected
             if (isset($data['course_id'])) {
-                //Creating a new course
+                // Creating a new course
                 if ($course['course_name'] != '') {
                     $course['person_id'] = $_SESSION['person_id'];
                     $result = mysqli_query($db, "SHOW TABLE STATUS LIKE 'course'");
                     $row = mysqli_fetch_array($result);
-                    $data['course_id'] = $row['Auto_increment']; // get the next id for creating a unique filename
+                    $data['course_id'] = $row['Auto_increment']; // Get the next id for creating a unique filename
                     insert('course', $course);
                     echo 'Kursus loodud!';
                 }
@@ -71,7 +72,7 @@ class user extends Controller
             }
 
             // variable to check for existing videos
-            $check_for_video = true;
+            $video_exists = false;
             //getting tag array from $data array
             $tags = explode(", ", $tags['tags']);
             //setting person id to logged on person
@@ -82,7 +83,7 @@ class user extends Controller
                 //TODO: create video thumbnails
                 global $db;
                 $file = $_FILES['upload'];
-                $filename = basename($file['name']);
+                $filename = $data['filename'] = basename($file['name']);
                 $info = pathinfo($filename);
                 $ext = $info['extension']; // get the extension of the file
                 $allowed = array('mp4', 'webm');
@@ -118,18 +119,17 @@ class user extends Controller
                 // loop to look for videos in database based on title or link
                 foreach ($video_db as $video_s) {
                     if (in_array($data['title'], $video_s) || in_array($data['link'], $video_s)) {
-                        $check_for_video = false;
+                        $video_exists = true;
                         break;
                     }
                 }
             }
-            if ($check_for_video) {
+            if (!$video_exists) {
                 //TODO: error handling for insert functions
                 insert('video', $data);
                 $tags_db = get_all("SELECT tag_name FROM tag");
                 $last_video_id = get_one("SELECT video_id FROM video ORDER BY video_id DESC LIMIT 1");// last added video id to add tags with it
                 foreach ($tags as $tag) {
-
                     $tag_name['tag_name'] = $tag;
                     if (!in_array($tag_name, $tags_db)) {
                         insert('tag', $tag_name);
@@ -210,8 +210,9 @@ class user extends Controller
                 }
             }
             delete('video_tags', "video_id = '$video_id'");
+            delete('comment', "video_id = '$video_id'");
             delete('video', "video_id='$video_id'");
-            exit("1");
+            exit("Ok");
         }
     }
 }
