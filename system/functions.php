@@ -64,15 +64,14 @@ function createFileFromChunks($temp_dir, $fileName, $chunkSize, $totalSize)
     // check that all the parts are present
     // the size of the last part is between chunkSize and 2*$chunkSize
     if ($total_files * $chunkSize >= ($totalSize - $chunkSize + 1)) {
-
         if (isset($_SESSION['file'])) { // Update the database if a file has been previously uploaded
-            $id = $_SESSION['file']['file_id'];
+            $id = $_SESSION['file']['video_id'];
             update('video', ['filename' => $fileName, 'uploader_ip' => $_SERVER['REMOTE_ADDR']], "video_id = '$id'");
         } else {    // Create a new file record in database
-            $id = insert('video', ['filename' => $fileName, 'uploader_ip' => $_SERVER['REMOTE_ADDR']]);
+            $id = insert('video', ['linktype' => 1, 'filename' => $fileName, 'person_id' => $_SESSION['person_id'], 'uploader_ip' => $_SERVER['REMOTE_ADDR']]);
         }
         // Request the inserted row and assign results to session
-        $data = get_first("SELECT * FROM video WHERE file_id = '$id'");
+        $data = get_first("SELECT * FROM video WHERE video_id = '$id'");
         $_SESSION['file'] = $data;
 
 
@@ -80,11 +79,12 @@ function createFileFromChunks($temp_dir, $fileName, $chunkSize, $totalSize)
         if (!is_dir($destination_dir)) {
             mkdir($destination_dir, 0777, true);
         }
+
         // create the final destination file and name it by file_id
-        if (($fp = fopen($destination_dir . $data['file_id'], 'w')) !== false) {
+        if (($fp = fopen($destination_dir . $data['video_id'], 'w')) !== false) {
             for ($i = 1; $i <= $total_files; $i++) {
                 fwrite($fp, file_get_contents($temp_dir . '/' . $fileName . '.part' . $i));
-                exit('writing chunk ' . $i);
+                print ('writing chunk ' . $i);
             }
             fclose($fp);
         } else {
