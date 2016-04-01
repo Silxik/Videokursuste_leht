@@ -89,7 +89,7 @@
                     <legend class="text-center">Lisa video</legend>
                     <button id="yt-btn" class="btn btn-primary btn-lg">Youtube link</button>
                     <button id="up-btn" class="btn btn-primary btn-lg">Lae üles</button>
-                    <form class="form-horizontal" action="" method="post" enctype="multipart/form-data">
+                    <form class="upload-form form-horizontal">
                         <fieldset>
                             <input type="file" id="file-input" multiple="multiple" name="upload" accept="video/*"/>
 
@@ -102,7 +102,7 @@
                                 <span class="up-cancel glyphicon glyphicon-remove"></span>
                             </div>
                             <div id="yt-div">
-                                <input id="yt-inp" name="data[link]" type="text" placeholder="link"
+                                <input id="yt-inp" name="link" type="text" placeholder="link"
                                        class="form-control">
                             </div>
                             <div id="details">
@@ -117,7 +117,7 @@
                                     <label class="col-md-3 control-label" for="title">Pealkiri</label>
 
                                     <div class="col-md-9">
-                                        <input id="title" name="data[title]" type="text" placeholder="Pealkiri"
+                                        <input id="title" name="title" type="text" placeholder="Pealkiri"
                                                class="form-control">
                                     </div>
                                 </div>
@@ -127,7 +127,7 @@
                                     <label class="col-md-3 control-label" for="desc">Kirjeldus</label>
 
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="desc" name="data[video_desc]"
+                                        <textarea class="form-control" id="desc" name="video_desc"
                                                   placeholder="Kirjeldus" rows="5"></textarea>
                                     </div>
                                 </div>
@@ -137,7 +137,7 @@
                                     <label class="col-md-3 control-label" for="tags">Märksõnad</label>
 
                                     <div class="col-md-9">
-                                        <textarea class="form-control" id="tags" name="tags[tags]"
+                                        <textarea class="form-control" id="tags" name="tags"
                                                   placeholder="Märksõnad, eraldatud komaga" rows="3"></textarea>
                                     </div>
                                 </div>
@@ -148,11 +148,10 @@
                                         kasutajatele)</label>
 
                                     <div class="col-md-3">
-                                        <input checked type="checkbox" class="form-control" id="access"
-                                               name="data[public]">
+                                        <input checked type="checkbox" class="form-control" id="access" name="public">
                                     </div>
                                 </div>
-                                <select placeholder="Vali kursus" id="course" name="data[course_id]"
+                                <select placeholder="Vali kursus" id="course" name="course_id"
                                         style="width:350px;">
                                     <option disabled selected>Soovi korral lisa uus kursus või vali olemasolev</option>
                                     <option value="Lisa uus">Lisa uus</option>
@@ -169,7 +168,7 @@
                                         <label class="col-md-3 control-label" for="title">Kursuse pealkiri</label>
 
                                         <div class="col-md-9">
-                                            <input id="course-title" name="course[course_name]" type="text"
+                                            <input id="course-title" name="course_name" type="text"
                                                    placeholder="Pealkiri" class="form-control">
                                         </div>
                                     </div>
@@ -178,7 +177,7 @@
                                         <label class="col-md-3 control-label" for="desc">Kursuse kirjeldus</label>
 
                                         <div class="col-md-9">
-                                            <textarea id="course-desc" name="course[course_desc]"
+                                            <textarea id="course-desc" name="course_desc"
                                                       placeholder="Kirjeldus" rows="5" class="form-control"></textarea>
                                         </div>
                                     </div>
@@ -187,7 +186,7 @@
                                 <!-- Form actions -->
                                 <div class="form-group">
                                     <div class="col-md-12 text-right">
-                                        <button type="submit" class="btn btn-primary btn-lg">Lisa</button>
+                                        <button class="submit-btn btn btn-primary btn-lg">Lisa</button>
                                     </div>
                                 </div>
                             </div>
@@ -246,6 +245,8 @@
                             $.getJSON(base + par[1], fillInfo);
                         }
                     }
+                    // Cancel file upload
+                    resum.cancel();
                 }
             }
 
@@ -260,10 +261,11 @@
                 $('#details').show();
             }
 
-            var resum = new Resumable({target: 'user', maxChunkRetries: 6}),
+            var resum = new Resumable({target: 'user/upload', maxChunkRetries: 6}),
                 upDiv = $('#up-div'), fileInp = $('#file-input')[0], ytInp = $('#yt-inp');
 
             ytInp.on('input', getLinkData);
+
             resum.assignBrowse(fileInp);
             resum.assignDrop(upDiv);
             resum.on('fileProgress', function (e) {
@@ -279,6 +281,8 @@
                 $('#details').show();
                 // Set title as filename
                 $('#title').val(e.file.name);
+                // Clear youtube link input
+                ytInp.val('');
             });
             resum.on('fileError', function (file, message) {
                 console.log('Uploading failed');
@@ -299,6 +303,7 @@
             upDiv.on('dragleave', function () {
                 upDiv.removeClass('drop');
             });
+
             $('.up-cancel').on('click', function () {
                 resum.cancel();
                 $('#up-div').show();
@@ -308,17 +313,38 @@
                 $('#up-div').hide();
                 $('#yt-div').show();
                 $('.progress-bar').hide();
-                resum.cancel();
             });
             $('#up-btn').on('click', function () {
                 $('#yt-div').hide();
-                $('#up-div').show();
+                if (resum.files.length > 0) {
+                    $('.progress-bar').show();
+                } else {
+                    $('#up-div').show();
+                }
             });
             $('#course').on('change', function (e) {
                 if (this.value == 'Lisa uus') {
                     $('#course-new').show();
                     $(this).hide();
                 }
+            });
+            $('.submit-btn').on('click', function (e) {
+                var data = $('.upload-form').serializeArray();
+
+                $.post("user", data, function (response) {
+                    if (response == 'Ok') {
+                        alert('Video salvestatud!');
+                        window.location = window.location;
+                    } else {
+                        console.log(response);
+                    }
+                    $('.submit-btn').prop("disabled", false);
+                });
+
+                // Disable submit button
+                $(this).prop("disabled", true);
+                // Prevent page refresh
+                e.preventDefault();
             });
         });
     </script>
