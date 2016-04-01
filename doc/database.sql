@@ -3,7 +3,7 @@
 -- http://www.phpmyadmin.net
 --
 -- Host: 127.0.0.1
--- Generation Time: Aug 03, 2015 at 09:32 AM
+-- Generation Time: Apr 01, 2016 at 01:58 PM
 -- Server version: 5.6.24
 -- PHP Version: 5.6.8
 
@@ -29,14 +29,9 @@ CREATE TABLE IF NOT EXISTS `comment` (
   `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
   `video_id` int(11) unsigned NOT NULL,
   `person_id` int(11) unsigned NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=2 DEFAULT CHARSET=utf8;
-
---
--- Dumping data for table `comment`
---
-
-INSERT INTO `comment` (`comment_id`, `comment`, `rating`, `date_added`, `video_id`, `person_id`) VALUES
-  (1, 'test', 5, '2015-07-17 14:13:49', 1, 3);
+)
+  ENGINE = InnoDB
+  DEFAULT CHARSET = utf8;
 
 -- --------------------------------------------------------
 
@@ -51,7 +46,10 @@ CREATE TABLE IF NOT EXISTS `course` (
   `date_added` datetime NOT NULL DEFAULT CURRENT_TIMESTAMP,
   `person_id` int(10) unsigned NOT NULL,
   `course_desc` varchar(512) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=5 DEFAULT CHARSET=utf8;
+)
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 4
+  DEFAULT CHARSET = utf8;
 
 --
 -- Dumping data for table `course`
@@ -59,8 +57,8 @@ CREATE TABLE IF NOT EXISTS `course` (
 
 INSERT INTO `course` (`course_id`, `course_name`, `date_added`, `person_id`, `course_desc`) VALUES
   (1, 'Kursuseta videod', '2015-07-14 16:56:35', 1, ''),
-  (2, 'PHP', '2015-07-14 17:59:51', 1, ''),
-  (4, 'PHP 2', '2015-07-17 10:51:32', 1, '');
+  (2, 'Test', '2016-04-01 14:19:00', 1, 'TestKirjeldus'),
+  (3, 'Muusika', '2016-04-01 14:47:02', 1, 'MuusikaMuusika');
 
 -- --------------------------------------------------------
 
@@ -107,7 +105,10 @@ DROP TABLE IF EXISTS `tag`;
 CREATE TABLE IF NOT EXISTS `tag` (
   `tag_id` int(10) unsigned NOT NULL,
   `tag_name` varchar(155) NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=8 DEFAULT CHARSET=utf8;
+)
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 40
+  DEFAULT CHARSET = utf8;
 
 --
 -- Dumping data for table `tag`
@@ -118,7 +119,39 @@ INSERT INTO `tag` (`tag_id`, `tag_name`) VALUES
   (2, 'tutorial'),
   (3, 'learn'),
   (4, 'basic'),
-  (7, 'PHP');
+  (7, 'PHP'),
+  (8, 'php tut'),
+  (9, ''),
+  (10, 'Electric Wizard (Musical Group)'),
+  (11, 'Witchcult Today (Musical Recording)'),
+  (12, 'Album'),
+  (13, 'Witchcult Today'),
+  (14, 'Dunwich'),
+  (15, 'Satanic Rites of Drugula'),
+  (16, 'Raptus'),
+  (17, 'The Chosen Few'),
+  (18, 'Torquemada ''71'),
+  (19, 'sleep'),
+  (20, 'dopesmoker'),
+  (21, 'al cisneros'),
+  (22, 'stoner rock'),
+  (23, 'butterlove'),
+  (24, 'Thoughty2'),
+  (25, 'Facts'),
+  (26, 'Interesting Facts'),
+  (27, 'Fun Facts'),
+  (28, 'Amazing Facts'),
+  (29, 'list'),
+  (30, 'top facts'),
+  (31, 'animal'),
+  (32, 'animals'),
+  (33, 'amazing'),
+  (34, 'ability'),
+  (35, 'animal abilities'),
+  (36, 'special'),
+  (37, 'function'),
+  (38, 'creative'),
+  (39, 'immortality');
 
 -- --------------------------------------------------------
 
@@ -128,31 +161,45 @@ INSERT INTO `tag` (`tag_id`, `tag_name`) VALUES
 
 DROP TABLE IF EXISTS `video`;
 CREATE TABLE IF NOT EXISTS `video` (
-  `video_id` int(10) unsigned NOT NULL,
-  `title` varchar(155) NOT NULL,
-  `video_desc` varchar(512) NOT NULL,
-  `link` varchar(155) NOT NULL,
-  `date_added` timestamp NOT NULL DEFAULT CURRENT_TIMESTAMP,
-  `person_id` int(10) unsigned NOT NULL,
-  `public` tinyint(1) NOT NULL DEFAULT '1',
-  `linktype` tinyint(4) NOT NULL DEFAULT '0',
-  `course_id` INT(10) UNSIGNED NOT NULL,
-  `subs`      VARCHAR(8)       NOT NULL
-) ENGINE=InnoDB AUTO_INCREMENT=6 DEFAULT CHARSET=utf8;
+  `video_id`    int(10) unsigned NOT NULL,
+  `filename`    VARCHAR(256)              DEFAULT NULL,
+  `title`       varchar(155)     NOT NULL,
+  `video_desc`  varchar(512)     NOT NULL,
+  `link`        varchar(155)     NOT NULL,
+  `date_added`  timestamp        NOT NULL DEFAULT CURRENT_TIMESTAMP,
+  `person_id`   int(10) unsigned NOT NULL,
+  `public`      tinyint(1)       NOT NULL DEFAULT '1',
+  `linktype`    tinyint(4)       NOT NULL DEFAULT '0',
+  `course_id`   INT(10) UNSIGNED NOT NULL DEFAULT '1',
+  `sub_fname`   VARCHAR(256)     NOT NULL,
+  `uploader_ip` VARCHAR(50)      NOT NULL
+)
+  ENGINE = InnoDB
+  AUTO_INCREMENT = 14
+  DEFAULT CHARSET = utf8;
 
 --
 -- Dumping data for table `video`
 --
 
-INSERT INTO `video` (`video_id`, `title`, `video_desc`, `link`, `date_added`, `person_id`, `public`, `linktype`, `course_id`, `subs`)
+INSERT INTO `video` (`video_id`, `filename`, `title`, `video_desc`, `link`, `date_added`, `person_id`, `public`, `linktype`, `course_id`, `sub_fname`, `uploader_ip`)
 VALUES
-  (1, 'Learn PHP in 15 minutes',
-   'PHP is one of the most useful languages to know and is used everywhere you look online. In this tutorial, I start from the beginning and show you how to start writing PHP scripts.\r\n\r\nThe video covers the software you need to get started, data types, outpu',
-   'ZdP0KM49IVk', '2015-07-15 14:38:51', 1, 1, 0, 2, ''),
-  (3, 'PHP Programming',
-   'Get the Cheat Sheet Here : http://goo.gl/aQbQ4F\r\n\r\nLearn HTML in 15 Minutes : http://goo.gl/UoSoVm\r\n\r\nBest PHP book : http://goo.gl/wNMdWf\r\n\r\nIn this video tutorial I''ll teach pretty much the whole PHP programming language in one video. I have received th',
-   '7TF00hJI78Y', '2015-07-15 14:40:41', 1, 1, 0, 2, ''),
-  (5, 'Tutorial 1 - Introduction to PHP', 'Introduction to php', '4.mp4', '2015-07-17 11:46:15', 1, 1, 1, 1, '4.srt');
+  (4, 'Wildlife.mp4', '', '', '', '2016-04-01 10:06:54', 1, 1, 0, 0, '', '::1'),
+  (5, 'Wildlife.mp4', '', '', '', '2016-04-01 10:09:53', 1, 1, 0, 0, '', '::1'),
+  (6, 'Wildlife.mp4', '', '', '', '2016-04-01 10:18:37', 1, 1, 0, 0, '', '::1'),
+  (7, 'Wildlife.mp4', '', '', '', '2016-04-01 10:20:36', 1, 1, 0, 0, '', '::1'),
+  (8, 'Wildlife.mp4', '', '', '', '2016-04-01 10:38:59', 1, 1, 0, 1, '', '::1'),
+  (9, NULL, 'Electric Wizard - Witchcult Today (Full Album)',
+      'Witchcult Today 2007\r\n\r\nsetlist:\r\n1. Witchcult Today\r\n2. Dunwich\r\n3. Satanic Rites of Drugula\r\n4. Raptus\r\n5. The Chosen Few\r\n6. Torquemada ''71\r\n7. Black Magic Rituals & Perversions\r\n8. Saturnine',
+      'Jzem_-At6F4', '2016-04-01 11:47:02', 1, 1, 0, 3, '', '::1'),
+  (10, 'Wildlife.mp4', '', '', '', '2016-04-01 11:52:33', 1, 1, 1, 1, '', '::1'),
+  (11, NULL, 'Sleep - Dopesmoker',
+       'Drop out of life with bong in hand, follow the smoke to the Riff Filled Land.\r\n\r\nArtwork by Arik Roper from the Dopesmoker Reissue.',
+       'hIw7oeZKpZc', '2016-04-01 11:54:09', 1, 1, 0, 3, '', '::1'),
+  (12, 'Wildlife.mp4', 'Wildlife.mp4', '', '', '2016-04-01 11:54:34', 1, 0, 1, 2, '', '::1'),
+  (13, NULL, '7 Amazing Animal Abilities',
+       'You won''t believe what amazing abilities some animals possess. Thoughty2 reveals seven amazing party tricks from the animal kingdom.\r\nSUBSCRIBE - New Vids Mon & Thurs: http://bit.ly/thoughty2\r\n\r\nAsk a Question on Thoughty2.com: http://thoughty2.com/ask\r\nSupport me on Patreon: https://www.patreon.com/thoughty2\r\nThoughty2 Facebook: http://bit.ly/thoughtyfb\r\nThoughty2 Twitter: http://bit.ly/thoughty2twt\r\nThoughty2 Merchandise: http://thoughty2.spreadshirt.com\r\n\r\nWith Special Thanks To:\r\nMisha A-Wilson, Katrina',
+       'M2-0zly1GmY', '2016-04-01 11:56:30', 1, 1, 0, 2, '', '::1');
 
 -- --------------------------------------------------------
 
@@ -171,16 +218,36 @@ CREATE TABLE IF NOT EXISTS `video_tags` (
 --
 
 INSERT INTO `video_tags` (`video_id`, `tag_id`) VALUES
-  (1, 1),
-  (3, 1),
-  (5, 1),
-  (1, 2),
-  (3, 2),
-  (1, 3),
-  (3, 3),
-  (1, 4),
-  (3, 4),
-  (5, 4);
+  (12, 9),
+  (9, 10),
+  (9, 11),
+  (9, 12),
+  (9, 13),
+  (9, 14),
+  (9, 15),
+  (9, 16),
+  (9, 17),
+  (11, 19),
+  (11, 20),
+  (11, 21),
+  (11, 22),
+  (11, 23),
+  (13, 24),
+  (13, 25),
+  (13, 26),
+  (13, 27),
+  (13, 28),
+  (13, 29),
+  (13, 30),
+  (13, 31),
+  (13, 32),
+  (13, 33),
+  (13, 34),
+  (13, 35),
+  (13, 36),
+  (13, 37),
+  (13, 38),
+  (13, 39);
 
 --
 -- Indexes for dumped tables
@@ -230,12 +297,12 @@ ADD PRIMARY KEY (`video_id`, `tag_id`), ADD KEY `tag_id` (`tag_id`);
 -- AUTO_INCREMENT for table `comment`
 --
 ALTER TABLE `comment`
-MODIFY `comment_id` int(155) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=2;
+MODIFY `comment_id` INT(155) UNSIGNED NOT NULL AUTO_INCREMENT;
 --
 -- AUTO_INCREMENT for table `course`
 --
 ALTER TABLE `course`
-MODIFY `course_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=5;
+MODIFY `course_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 4;
 --
 -- AUTO_INCREMENT for table `person`
 --
@@ -245,12 +312,12 @@ MODIFY `person_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=7;
 -- AUTO_INCREMENT for table `tag`
 --
 ALTER TABLE `tag`
-MODIFY `tag_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=8;
+MODIFY `tag_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 40;
 --
 -- AUTO_INCREMENT for table `video`
 --
 ALTER TABLE `video`
-MODIFY `video_id` int(10) unsigned NOT NULL AUTO_INCREMENT,AUTO_INCREMENT=6;
+MODIFY `video_id` INT(10) UNSIGNED NOT NULL AUTO_INCREMENT, AUTO_INCREMENT = 14;
 --
 -- Constraints for dumped tables
 --
@@ -272,8 +339,7 @@ ADD CONSTRAINT `course_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `person` (`p
 -- Constraints for table `video`
 --
 ALTER TABLE `video`
-ADD CONSTRAINT `video_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`),
-ADD CONSTRAINT `video_ibfk_2` FOREIGN KEY (`course_id`) REFERENCES `course` (`course_id`);
+ADD CONSTRAINT `video_ibfk_1` FOREIGN KEY (`person_id`) REFERENCES `person` (`person_id`);
 
 --
 -- Constraints for table `video_tags`
